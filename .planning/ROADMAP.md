@@ -28,7 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. When a Cloudflare challenge is detected, the actor attempts CF bypass and reports the outcome — never silently returns a challenge page labeled as PASS_CONTENT
   4. A failed user URL is written to the staging queue in site_test_catalog; it does not appear in scheduled harness runs until promoted
   5. Concurrent screenshot requests and harness runs do not exhaust the CF bypass worker (semaphore enforced)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Build screenshot_tool.py: full capture/classify/bypass pipeline (self-contained Python)
+- [ ] 01-02-PLAN.md — Wire tool into openclaw-fresh agent: Node.js bridge, intent routing, Telegram delivery, staging enrollment
 
 ### Phase 2: L2 Perception Harness
 **Goal**: The system autonomously monitors a URL catalog on a schedule, storing classified screenshots and artifacts for every run
@@ -57,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. L1 Screenshot Actor | 0/TBD | Not started | - |
+| 1. L1 Screenshot Actor | 0/2 | Not started | - |
 | 2. L2 Perception Harness | 0/TBD | Not started | - |
 | 3. Alerting and Operator Workflow | 0/TBD | Not started | - |
