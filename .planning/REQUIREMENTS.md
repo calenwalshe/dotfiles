@@ -63,20 +63,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CAPT-01 | — | Pending |
-| CLSF-01 | — | Pending |
-| CLSF-02 | — | Pending |
-| CLSF-03 | — | Pending |
-| CLSF-04 | — | Pending |
-| INFR-01 | — | Pending |
-| INFR-02 | — | Pending |
-| INFR-03 | — | Pending |
+| CAPT-01 | Phase 1 | Pending |
+| CLSF-01 | Phase 1 | Pending |
+| CLSF-02 | Phase 1 | Pending |
+| CLSF-03 | Phase 1 | Pending |
+| CLSF-04 | Phase 1 | Pending |
+| INFR-01 | Phase 1 | Pending |
+| INFR-02 | Phase 3 | Pending |
+| INFR-03 | Phase 2 | Pending |
 
 **Coverage:**
 - v1 requirements: 8 total
-- Mapped to phases: 0
-- Unmapped: 8
+- Mapped to phases: 8
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-03 after initial definition*
+*Last updated: 2026-03-03 — traceability populated after roadmap creation*
