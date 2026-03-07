@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Interactive wrapper for adding entries to pass
+
+set -e
+
+# Entry path
+if [ -n "$1" ]; then
+    entry="$1"
+else
+    read -rp "Entry name (e.g. radio/fcc-uls): " entry
+fi
+
+if [ -z "$entry" ]; then
+    echo "Error: entry name required"
+    exit 1
+fi
+
+# Check if it already exists
+if pass show "$entry" &>/dev/null; then
+    read -rp "Entry '$entry' already exists. Overwrite? [y/N]: " overwrite
+    [[ "$overwrite" =~ ^[Yy]$ ]] || exit 0
+fi
+
+echo ""
+echo "--- Adding: $entry ---"
+echo ""
+
+# Collect fields
+read -rsp "Password: " password
+echo ""
+read -rsp "Confirm password: " password2
+echo ""
+
+if [ "$password" != "$password2" ]; then
+    echo "Error: passwords don't match"
+    exit 1
+fi
+
+read -rp "Username: " username
+read -rp "URL: " url
+read -rp "Notes (optional): " notes
+
+# Build entry
+content="$password"
+[ -n "$username" ] && content="$content
+username: $username"
+[ -n "$url" ] && content="$content
+url: $url"
+[ -n "$notes" ] && content="$content
+notes: $notes"
+
+# Preview (masked)
+echo ""
+echo "--- Preview ---"
+echo "Password: ********"
+[ -n "$username" ] && echo "Username: $username"
+[ -n "$url" ] && echo "URL: $url"
+[ -n "$notes" ] && echo "Notes: $notes"
+echo "----------------"
+echo ""
+
+read -rp "Save to '$entry'? [Y/n]: " confirm
+if [[ "$confirm" =~ ^[Nn]$ ]]; then
+    echo "Cancelled."
+    exit 0
+fi
+
+echo "$content" | pass insert -m "$entry" -f
+echo ""
+echo "Saved to: $entry"
+echo "Retrieve with: pass show $entry"
