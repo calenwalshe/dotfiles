@@ -9,18 +9,18 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Screenshot Capture
 
-- [ ] **CAPT-01**: L1 captures full-page screenshot of any URL via Playwright browser-service
+- [x] **CAPT-01**: L1 captures full-page screenshot of any URL via Playwright browser-service
 
 ### Classification
 
-- [ ] **CLSF-01**: 5-class taxonomy implemented: PASS_CONTENT, BLOCKED_CHALLENGE, BLANK_PAGE, DEGRADED_CONTENT, SOFT_BLOCK
-- [ ] **CLSF-02**: Rule-based fast path classifies clear cases without LLM call
-- [ ] **CLSF-03**: Vision LLM fallback (Gemini 2.5 Flash) classifies ambiguous screenshots
-- [ ] **CLSF-04**: Confidence score (0.0–1.0) attached to each classification result
+- [x] **CLSF-01**: 5-class taxonomy implemented: PASS_CONTENT, BLOCKED_CHALLENGE, BLANK_PAGE, DEGRADED_CONTENT, SOFT_BLOCK
+- [x] **CLSF-02**: Rule-based fast path classifies clear cases without LLM call
+- [x] **CLSF-03**: Vision LLM fallback (Gemini 2.5 Flash) classifies ambiguous screenshots
+- [x] **CLSF-04**: Confidence score (0.0–1.0) attached to each classification result
 
 ### Infrastructure
 
-- [ ] **INFR-01**: Concurrency guard (asyncio.Semaphore) on shared cf-bypass-worker prevents contention
+- [x] **INFR-01**: Concurrency guard (asyncio.Semaphore) on shared cf-bypass-worker prevents contention
 - [ ] **INFR-02**: Bypass health metric tracks CF bypass success rate over time
 - [ ] **INFR-03**: Screenshot artifacts stored with metadata (URL, timestamp, classification, confidence)
 
@@ -63,12 +63,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CAPT-01 | Phase 1 | Pending |
-| CLSF-01 | Phase 1 | Pending |
-| CLSF-02 | Phase 1 | Pending |
-| CLSF-03 | Phase 1 | Pending |
-| CLSF-04 | Phase 1 | Pending |
-| INFR-01 | Phase 1 | Pending |
+| CAPT-01 | Phase 1 | Complete |
+| CLSF-01 | Phase 1 | Complete |
+| CLSF-02 | Phase 1 | Complete |
+| CLSF-03 | Phase 1 | Complete |
+| CLSF-04 | Phase 1 | Complete |
+| INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 3 | Pending |
 | INFR-03 | Phase 2 | Pending |
 
