@@ -42,7 +42,10 @@ Plans:
   1. The `url_screenshot` harness suite runs on the configured schedule and processes every active URL in site_test_catalog
   2. Each run produces a stored artifact: PNG on filesystem and metadata (URL, timestamp, classification, confidence) in JSONL; artifacts older than the pruning window are removed automatically
   3. The harness suite is visible in the existing master_harness registry and its runs appear in harness result storage alongside existing suites
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 02-01-PLAN.md — Build l2_perception harness suite: capture/classify/store pipeline, artifact management, drift detection, config wiring
 
 ### Phase 3: Alerting and Operator Workflow
 **Goal**: The operator receives actionable alerts when failure patterns change, can review bypass health, and can promote URLs from staging to the active test suite
@@ -57,10 +60,10 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
+Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. L1 Screenshot Actor | 0/2 | Not started | - |
-| 2. L2 Perception Harness | 0/TBD | Not started | - |
+| 1. L1 Screenshot Actor | 2/2 | Complete | 2026-03-10 |
+| 2. L2 Perception Harness | 0/1 | Planning complete | - |
 | 3. Alerting and Operator Workflow | 0/TBD | Not started | - |
