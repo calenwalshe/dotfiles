@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 Phase: 2 of 3 (L2 Perception Harness) -- COMPLETE
 Plan: 1 of 1 in current phase
 Status: Phase 02 complete (all plans done)
-Last activity: 2026-03-30 — Completed 02-01-PLAN.md (l2_perception harness suite)
+Last activity: 2026-03-30 — Completed quick task 1: install google stitch, use the api and integrate it into the rest of the system and do a test
 
 Progress: [██████████] 100%
 
@@ -83,6 +83,12 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | install google stitch, use the api and integrate it into the rest of the system and do a test | 2026-03-30 | 08ce549 | [1-install-google-stitch-use-the-api-and-in](.planning/quick/1-install-google-stitch-use-the-api-and-in/) |
 
 ### Blockers/Concerns
 
