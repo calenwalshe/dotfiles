@@ -13,7 +13,7 @@ Three phases build the system in strict dependency order. Phase 1 delivers the L
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: L1 Screenshot Actor** - Telegram command captures any URL, classifies the result, returns screenshot to user
-- [ ] **Phase 2: L2 Perception Harness** - Scheduled suite monitors URL catalog, stores classified artifacts, feeds reporter
+- [x] **Phase 2: L2 Perception Harness** - Scheduled suite monitors URL catalog, stores classified artifacts, feeds reporter (completed 2026-03-30)
 - [ ] **Phase 3: Alerting and Operator Workflow** - Tuned failure alerts, bypass health metric, staging queue promotion
 
 ## Phase Details
@@ -65,5 +65,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. L1 Screenshot Actor | 2/2 | Complete | 2026-03-10 |
-| 2. L2 Perception Harness | 0/1 | Planning complete | - |
+| 2. L2 Perception Harness | 1/1 | Complete   | 2026-03-30 |
 | 3. Alerting and Operator Workflow | 0/TBD | Not started | - |

@@ -22,7 +22,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INFR-01**: Concurrency guard (asyncio.Semaphore) on shared cf-bypass-worker prevents contention
 - [ ] **INFR-02**: Bypass health metric tracks CF bypass success rate over time
-- [ ] **INFR-03**: Screenshot artifacts stored with metadata (URL, timestamp, classification, confidence)
+- [x] **INFR-03**: Screenshot artifacts stored with metadata (URL, timestamp, classification, confidence)
 
 ## v2 Requirements
 
@@ -70,7 +70,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLSF-04 | Phase 1 | Complete |
 | INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 3 | Pending |
-| INFR-03 | Phase 2 | Pending |
+| INFR-03 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 8 total

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-10T07:01:13.495Z"
-last_activity: 2026-03-10 — Completed 01-02-PLAN.md (agent integration + staging enrollment)
+stopped_at: Completed 02-01-PLAN.md (l2_perception harness suite)
+last_updated: "2026-03-30T05:00:26.451Z"
+last_activity: 2026-03-30 — Completed 02-01-PLAN.md (l2_perception harness suite)
 progress:
   total_phases: 3
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
   percent: 100
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 ## Current Position
 
-Phase: 1 of 3 (L1 Screenshot Actor) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase 01 complete (all plans done)
-Last activity: 2026-03-10 — Completed 01-02-PLAN.md (agent integration + staging enrollment)
+Phase: 2 of 3 (L2 Perception Harness) -- COMPLETE
+Plan: 1 of 1 in current phase
+Status: Phase 02 complete (all plans done)
+Last activity: 2026-03-30 — Completed 02-01-PLAN.md (l2_perception harness suite)
 
 Progress: [██████████] 100%
 
@@ -52,6 +52,7 @@ Progress: [██████████] 100%
 *Updated after each plan completion*
 | Phase 01-l1-screenshot-actor P01 | 3min | 2 tasks | 2 files |
 | Phase 01-l1-screenshot-actor P02 | 9min | 4 tasks | 3 files |
+| Phase 02-l2-perception-harness P01 | 4min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 01-l1-screenshot-actor P02]: Python bridge instead of Node.js -- openclaw is LLM agent with exec dispatch, tools are Python scripts invoked via exec
 - [Phase 01-l1-screenshot-actor P02]: Agent tool wiring via TOOLS.md instructions, not handler file modification
 - [Phase 01-l1-screenshot-actor P02]: Staging uses category=l1-staging + active=false in existing schema (no migration needed)
+- [Phase 02-l2-perception-harness]: asyncpg deferred to inside run() — keeps pure functions locally importable without Docker env, enables TDD on local machine
+- [Phase 02-l2-perception-harness]: Import guard in test file uses skipIf(ImportError) — handles RED phase and missing-dep scenarios identically
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T07:01:13.490Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-l2-perception-harness/02-CONTEXT.md
+Last session: 2026-03-30T05:00:10.801Z
+Stopped at: Completed 02-01-PLAN.md (l2_perception harness suite)
+Resume file: None
