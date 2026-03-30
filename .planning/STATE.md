@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 03-03-PLAN.md (promote_bridge staging queue tool)
-last_updated: "2026-03-30T05:27:54.501Z"
+stopped_at: Completed 03-02-PLAN.md (l2_perception_alerting module + wiring)
+last_updated: "2026-03-30T05:28:30.623Z"
 last_activity: 2026-03-30 — Completed 02-01-PLAN.md (l2_perception harness suite)
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 100
 ---
 
@@ -55,6 +55,7 @@ Progress: [██████████] 100%
 | Phase 02-l2-perception-harness P01 | 4min | 3 tasks | 3 files |
 | Phase 03-alerting-and-operator-workflow P01 | 3min | 2 tasks | 2 files |
 | Phase 03-alerting-and-operator-workflow P03 | 2min | 2 tasks | 2 files |
+| Phase 03-alerting-and-operator-workflow P02 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 03-alerting-and-operator-workflow]: test_promote_bridge.py force-added to openclaw-fresh repo (workspace/ gitignored but tools/ has tracked precedent)
 - [Phase 03-alerting-and-operator-workflow]: promote_site calls list_staging() internally to get current site fields before POST — avoids stale field assumptions
 - [Phase 03-alerting-and-operator-workflow]: All promote_bridge error paths return JSON ok=false — never raise, never exit(1) — consistent with screenshot_agent_bridge.py contract
+- [Phase 03-alerting-and-operator-workflow]: Bypass digest fires once per run outside per-site loop to avoid N digests per run
+- [Phase 03-alerting-and-operator-workflow]: failure_alert_threshold=2 default suppresses single-run blips
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T05:27:54.496Z
-Stopped at: Completed 03-03-PLAN.md (promote_bridge staging queue tool)
+Last session: 2026-03-30T05:28:30.618Z
+Stopped at: Completed 03-02-PLAN.md (l2_perception_alerting module + wiring)
 Resume file: None
