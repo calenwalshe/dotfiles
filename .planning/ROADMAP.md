@@ -55,7 +55,12 @@ Plans:
   1. When a previously-passing URL starts failing, the operator receives a Telegram alert with the URL, new failure class, and how many consecutive failures have occurred
   2. A daily or per-run bypass health digest shows the CF bypass success rate over the last 24 hours — a rate below threshold triggers an alert without requiring manual inspection
   3. The operator can list staging queue entries and promote a URL to the active test suite via Telegram command, without editing any config files
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Write failing test scaffolds for alerting module and promote_bridge (TDD RED phase)
+- [ ] 03-02-PLAN.md — Build l2_perception_alerting.py and wire into l2_perception.py and config.yaml (TDD GREEN)
+- [ ] 03-03-PLAN.md — Build promote_bridge.py and wire into workspace/TOOLS.md (staging queue promotion)
 
 ## Progress
 
@@ -66,4 +71,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. L1 Screenshot Actor | 2/2 | Complete | 2026-03-10 |
 | 2. L2 Perception Harness | 1/1 | Complete   | 2026-03-30 |
-| 3. Alerting and Operator Workflow | 0/TBD | Not started | - |
+| 3. Alerting and Operator Workflow | 0/3 | Not started | - |
