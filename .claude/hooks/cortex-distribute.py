@@ -85,7 +85,7 @@ def create_notebook(title: str, content: str, file_path: str) -> None:
     notebook_title = f"Research — {title}"
     try:
         result = subprocess.run(
-            [NLM, "notebook", "create", "--title", notebook_title],
+            [NLM, "notebook", "create", notebook_title],
             capture_output=True,
             text=True,
             timeout=30,
@@ -115,7 +115,7 @@ def create_notebook(title: str, content: str, file_path: str) -> None:
 
         # Add content as text source via tmpfile (nlm source add --text-file)
         source_result = subprocess.run(
-            [NLM, "source", "add", "--notebook", notebook_id, "--text-file", file_path],
+            [NLM, "source", "add", notebook_id, "--text", content],
             capture_output=True,
             text=True,
             timeout=60,
