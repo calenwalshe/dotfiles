@@ -21,6 +21,7 @@ from pathlib import Path
 LOG = Path.home() / ".claude/hooks/logs/cortex-distribute.log"
 CREDS = Path.home() / ".gmail_creds.json"
 NLM = "/home/agent/.local/bin/nlm"
+NLM_REFRESH = Path(__file__).parent / "nlm-refresh.py"
 
 
 def log(msg: str) -> None:
@@ -81,8 +82,30 @@ def send_email(title: str, content: str, file_path: str) -> None:
         log(f"email:error: {e} — file={file_path}")
 
 
+def refresh_nlm_auth() -> bool:
+    """Refresh nlm cookies from Chrome CDP. Returns True if auth is now valid."""
+    try:
+        result = subprocess.run(
+            [sys.executable, str(NLM_REFRESH)],
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if result.returncode == 0:
+            log(f"notebooklm:auth-refresh: ok")
+            return True
+        log(f"notebooklm:auth-refresh: failed — {result.stdout.strip()[:200]}")
+        return False
+    except Exception as e:
+        log(f"notebooklm:auth-refresh: exception — {e}")
+        return False
+
+
 def create_notebook(title: str, content: str, file_path: str) -> None:
     notebook_title = f"Research — {title}"
+    if not refresh_nlm_auth():
+        log(f"notebooklm:error: auth refresh failed, skipping notebook creation — file={file_path}")
+        return
     try:
         result = subprocess.run(
             [NLM, "notebook", "create", notebook_title],
