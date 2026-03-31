@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Completed 03-02-PLAN.md (l2_perception_alerting module + wiring)
-last_updated: "2026-03-30T05:31:51.757Z"
-last_activity: 2026-03-30 — Completed 02-01-PLAN.md (l2_perception harness suite)
+milestone: v2.0
+milestone_name: player-continuity-tracker
+status: ready
+stopped_at: Milestone v2.0 imported from Cortex handoff
+last_updated: "2026-03-31T08:35:00.000Z"
+last_activity: 2026-03-31 — Milestone v2.0 player-continuity-tracker imported from Cortex spec
 progress:
-  total_phases: 3
-  completed_phases: 3
+  total_phases: 4
+  completed_phases: 0
   total_plans: 6
-  completed_plans: 6
-  percent: 100
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Given any URL, return a screenshot with an honest classification of what was captured — never silently return garbage.
-**Current focus:** Phase 1 — L1 Screenshot Actor
+**Current focus:** Phase 4 — Environment Setup & Benchmark (v2.0 player-continuity-tracker)
 
 ## Current Position
 
-Phase: 2 of 3 (L2 Perception Harness) -- COMPLETE
-Plan: 1 of 1 in current phase
-Status: Phase 02 complete (all plans done)
-Last activity: 2026-03-30 — Completed quick task 1: install google stitch, use the api and integrate it into the rest of the system and do a test
+Phase: 4 of 7 (Environment Setup & Benchmark) — Ready to plan
+Plan: —
+Status: Ready to plan
+Last activity: 2026-03-31 — Milestone v2.0 started (imported from Cortex spec docs/cortex/specs/player-continuity-tracking/spec.md)
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -64,21 +64,12 @@ Progress: [██████████] 100%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Roadmap]: L1 before L2 — classification contract must be stable before L2 consumes it; site_test_catalog populated by L1 usage gives L2 real data
-- [Roadmap]: CLSF-01–04 assigned to Phase 1 — `_classify_blocker()` is the shared contract; it must be finalized in L1 before L2 imports it
-- [Roadmap]: INFR-01 (concurrency semaphore) in Phase 1 — must be in place before L2 activates to prevent bypass worker contention
-- [Phase 01-l1-screenshot-actor]: Classifier duplicated in screenshot_tool.py rather than shared module — avoids cross-container import; consolidate in Phase 2
-- [Phase 01-l1-screenshot-actor P02]: Python bridge instead of Node.js -- openclaw is LLM agent with exec dispatch, tools are Python scripts invoked via exec
-- [Phase 01-l1-screenshot-actor P02]: Agent tool wiring via TOOLS.md instructions, not handler file modification
-- [Phase 01-l1-screenshot-actor P02]: Staging uses category=l1-staging + active=false in existing schema (no migration needed)
-- [Phase 02-l2-perception-harness]: asyncpg deferred to inside run() — keeps pure functions locally importable without Docker env, enables TDD on local machine
-- [Phase 02-l2-perception-harness]: Import guard in test file uses skipIf(ImportError) — handles RED phase and missing-dep scenarios identically
-- [Phase 03-alerting-and-operator-workflow]: _should_alert extracted as pure function for direct unit testing without async mocking
-- [Phase 03-alerting-and-operator-workflow]: test_promote_bridge.py force-added to openclaw-fresh repo (workspace/ gitignored but tools/ has tracked precedent)
-- [Phase 03-alerting-and-operator-workflow]: promote_site calls list_staging() internally to get current site fields before POST — avoids stale field assumptions
-- [Phase 03-alerting-and-operator-workflow]: All promote_bridge error paths return JSON ok=false — never raise, never exit(1) — consistent with screenshot_agent_bridge.py contract
-- [Phase 03-alerting-and-operator-workflow]: Bypass digest fires once per run outside per-site loop to avoid N digests per run
-- [Phase 03-alerting-and-operator-workflow]: failure_alert_threshold=2 default suppresses single-run blips
+- [v2.0 Architecture]: Pre-processing tracking pass (ByteTrack + YOLOv8 + OSNet osnet_ain_x1_0 + EasyOCR) over full video before Gemini extraction — only architecture that achieves game-long identity continuity
+- [v2.0 Architecture]: Gemini role stays as event/timestamp detection only — it cannot do Re-ID (generative model, not embedding-based)
+- [v2.0 Architecture]: Gait excluded from scope — unreliable in broadcast soccer due to motion blur, variable angles, dynamic movement
+- [v2.0 Architecture]: Hair excluded as named feature — captured implicitly by OSNet appearance embedding
+- [v2.0 Privacy]: File API uploads of minor athlete footage must be deleted immediately after extraction; COPPA personal-use scope applies
+- [v2.0 Cortex]: Full Cortex pack at docs/cortex/specs/player-continuity-tracking/ — spec, handoff, contract-001.md (approved), eval-plan.md
 
 ### Pending Todos
 
@@ -92,12 +83,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: CF bypass success rate metric needs implementation decision — running count in site_test_scores or dedicated bypass_health table. Decide during Phase 1 planning.
-- [Phase 1]: Screenshot resize before Telegram delivery — confirm whether to resize before writing temp file or extend notifier.send_photo(). Decide during Phase 1 planning.
-- [Phase 3]: Staging queue promotion UX — Telegram inline keyboard vs /promote command. Decide during Phase 3 planning after reviewing openclaw-fresh command dispatch patterns.
+- [Phase 1 v1.0]: CF bypass success rate metric needs implementation decision — running count in site_test_scores or dedicated bypass_health table. Decide during Phase 1 planning.
+- [Phase 1 v1.0]: Screenshot resize before Telegram delivery — confirm whether to resize before writing temp file or extend notifier.send_photo(). Decide during Phase 1 planning.
 
 ## Session Continuity
 
-Last session: 2026-03-30T05:28:30.618Z
-Stopped at: Completed 03-02-PLAN.md (l2_perception_alerting module + wiring)
+Last session: 2026-03-31T08:35:00.000Z
+Stopped at: Milestone v2.0 imported — ready to plan Phase 4
 Resume file: None
