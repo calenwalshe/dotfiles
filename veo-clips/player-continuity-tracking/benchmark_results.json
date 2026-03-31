@@ -1,0 +1,22 @@
+{
+  "video": "/home/agent/veo-g15a-match-7mar2026/standard-1920x1080-followcam.mp4",
+  "benchmark_end_time_s": 300.0,
+  "sample_every_n_frames": 3,
+  "frames_read": 8991,
+  "frames_processed": 2997,
+  "total_detections": 35895,
+  "wall_time_s": 1539.86,
+  "processing_fps": 1.946,
+  "peak_ram_mb": 102.9,
+  "embeddings_extracted": 35895,
+  "projected_full_video_h": 6.1,
+  "cosine_sim_stats": {
+    "count": 250,
+    "mean": 0.6731,
+    "std": 0.0774,
+    "min": 0.402,
+    "max": 0.8385,
+    "p25": 0.6294,
+    "p75": 0.7238
+  }
+}

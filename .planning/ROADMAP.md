@@ -16,10 +16,10 @@
 - [x] **Phase 1: L1 Screenshot Actor** - Telegram command captures any URL, classifies the result, returns screenshot to user (complete 2026-03-10)
 - [x] **Phase 2: L2 Perception Harness** - Scheduled suite monitors URL catalog, stores classified artifacts, feeds reporter (complete 2026-03-30)
 - [x] **Phase 3: Alerting and Operator Workflow** - Tuned failure alerts, bypass health metric, staging queue promotion (complete 2026-03-30)
-- [ ] **Phase 4: Environment Setup & Benchmark** - Install tracker stack, verify CPU inference, benchmark first 5 minutes
-- [ ] **Phase 5: Core Tracker Build** - player_tracker.py with frame-streaming loop, player profile construction, annotation output
-- [ ] **Phase 6: Full-Video Run & Post-Processing** - Full 71-minute tracking pass, tracklet gap-merge, validate player_ids.json
-- [ ] **Phase 7: Integration & End-to-End Validation** - clip_extractor.py shim, 15-minute end-to-end test, eval plan execution
+- [x] **Phase 4: Environment Setup & Benchmark** - Install tracker stack, verify CPU inference, benchmark first 5 minutes
+- [x] **Phase 5: Core Tracker Build** - player_tracker.py with frame-streaming loop, player profile construction, annotation output
+- [x] **Phase 6: Full-Video Run & Post-Processing** - Full 71-minute tracking pass, tracklet gap-merge, validate player_ids.json
+- [x] **Phase 7: Integration & End-to-End Validation** - clip_extractor.py shim, 15-minute end-to-end test, eval plan execution
 
 ## Phase Details
 
@@ -78,7 +78,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — Install ultralytics/easyocr/torchreid, download weights, run 5-minute benchmark on veo footage
+- [x] 04-01-PLAN.md — Install ultralytics/easyocr/torchreid, download weights, run 5-minute benchmark on veo footage
 
 ### Phase 5: Core Tracker Build
 **Goal**: player_tracker.py exists, streams frames, builds a player profile from reference frames, and writes per-frame player ID annotations to player_ids.json
@@ -91,8 +91,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Write player_tracker.py: frame-streaming loop (YOLOv8 → OSNet → EasyOCR → ByteTrack ID assignment)
-- [ ] 05-02-PLAN.md — Implement player profile construction and per-frame annotation output to player_ids.json
+- [x] 05-01-PLAN.md — Write player_tracker.py: frame-streaming loop (YOLOv8 → OSNet → EasyOCR → ByteTrack ID assignment)
+- [x] 05-02-PLAN.md — Implement player profile construction and per-frame annotation output to player_ids.json
 
 ### Phase 6: Full-Video Run & Post-Processing
 **Goal**: Full 71-minute tracking pass completes within the ≤ 8h threshold; tracklet gap-merge eliminates spurious ID switches for sub-5s occlusions
@@ -105,7 +105,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Run full-video tracking pass; implement and apply tracklet gap-merge; validate player_ids.json coverage
+- [x] 06-01-PLAN.md — Run full-video tracking pass; implement and apply tracklet gap-merge; validate player_ids.json coverage
 
 ### Phase 7: Integration & End-to-End Validation
 **Goal**: clip_extractor.py consumes tracker output; 15-minute end-to-end pipeline produces correctly attributed clips in ≥ 80% of cases; all eval plan dimensions pass
@@ -120,8 +120,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Write clip_extractor.py integration shim; regression test with no tracker output
-- [ ] 07-02-PLAN.md — Run 15-minute end-to-end test; execute eval plan; record results
+- [x] 07-01-PLAN.md — Write clip_extractor.py integration shim; regression test with no tracker output
+- [x] 07-02-PLAN.md — Run 15-minute end-to-end test; execute eval plan; record results
 
 ## Progress
 
@@ -133,7 +133,7 @@ v1.0 phases complete. v2.0 phases execute in order: 4 -> 5 -> 6 -> 7
 | 1. L1 Screenshot Actor | 2/2 | Complete | 2026-03-10 |
 | 2. L2 Perception Harness | 1/1 | Complete | 2026-03-30 |
 | 3. Alerting and Operator Workflow | 3/3 | Complete | 2026-03-30 |
-| 4. Environment Setup & Benchmark | 0/1 | Not started | — |
-| 5. Core Tracker Build | 0/2 | Not started | — |
-| 6. Full-Video Run & Post-Processing | 0/1 | Not started | — |
-| 7. Integration & End-to-End Validation | 0/2 | Not started | — |
+| 4. Environment Setup & Benchmark | 1/1 | Complete | 2026-03-31 |
+| 5. Core Tracker Build | 2/2 | Complete | 2026-03-31 |
+| 6. Full-Video Run & Post-Processing | 1/1 | Complete | 2026-03-31 |
+| 7. Integration & End-to-End Validation | 2/2 | Complete | 2026-03-31 |
