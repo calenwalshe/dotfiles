@@ -24,7 +24,8 @@ class TestEndToEnd:
     def test_full_run_produces_handoff_package(self, graph, initial_state):
         result = graph.invoke(initial_state)
         assert result.get("handoff_package") is not None
-        assert result["handoff_package"]["assembled"] is True
+        assert "metadata" in result["handoff_package"]
+        assert "problem_statement" in result["handoff_package"]
 
     def test_full_run_traverses_all_phases(self, graph, initial_state):
         result = graph.invoke(initial_state)
@@ -52,8 +53,13 @@ class TestArtifactPresence:
         for agent in expected_agents:
             assert agent in artifacts, f"Missing artifact from {agent}"
 
-    def test_handoff_package_lists_source_agents(self, graph, initial_state):
+    def test_handoff_package_has_all_sections(self, graph, initial_state):
         result = graph.invoke(initial_state)
         package = result["handoff_package"]
-        source_agents = package["metadata"]["source_agents"]
-        assert len(source_agents) >= 6
+        expected = [
+            "problem_statement", "user_research", "product_pitch",
+            "requirements", "eval_criteria", "test_harness_concept",
+            "feedback_synthesis", "risk_log", "open_assumptions",
+        ]
+        for section in expected:
+            assert section in package, f"Missing section: {section}"
