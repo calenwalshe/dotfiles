@@ -1,0 +1,77 @@
+{
+  "run_id": "run-001",
+  "overall_pass": true,
+  "summary": "10/10 checks passed",
+  "scores": [
+    {
+      "agent_id": "uxr",
+      "dimension": "data_grounding",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "2/2 personas have data sources"
+    },
+    {
+      "agent_id": "uxr",
+      "dimension": "problem_validation",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "1 validation evidence item(s)"
+    },
+    {
+      "agent_id": "pm",
+      "dimension": "testable_requirements",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "2/2 requirements have acceptance criteria"
+    },
+    {
+      "agent_id": "pm",
+      "dimension": "pitch_grounding",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "Value proposition present"
+    },
+    {
+      "agent_id": "ds",
+      "dimension": "source_specificity",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "Feasibility assessment present"
+    },
+    {
+      "agent_id": "evaluation",
+      "dimension": "measurability",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "2 success criterion/criteria defined"
+    },
+    {
+      "agent_id": "evaluation",
+      "dimension": "harness_specificity",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "Test harness intent defined"
+    },
+    {
+      "agent_id": "pressure_test",
+      "dimension": "specificity",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "4/4 objections target specific claims (>10 chars)"
+    },
+    {
+      "agent_id": "pressure_test",
+      "dimension": "adversarial_stance",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "4 objection(s) raised"
+    },
+    {
+      "agent_id": "feedback_synthesis",
+      "dimension": "minimum_coverage",
+      "score": 1.0,
+      "passed": true,
+      "rationale": "1 alignment(s), 1 conflict(s) \u2014 meets minimum coverage"
+    }
+  ]
+}
