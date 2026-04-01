@@ -133,9 +133,9 @@ Plans:
 | 4. Worker Agents | 1/1 | Complete | 2026-04-01 |
 | 5. Integration | 1/1 | Complete | 2026-04-01 |
 | 6. Eval & Validation | 1/1 | Complete | 2026-04-01 |
-| 7. HITL Framework | 0/2 | Not started | - |
-| 8. Agent Runner | 0/1 | Not started | - |
-| 9. LLM Worker Agents | 0/2 | Not started | - |
-| 10. Orchestrator Upgrade | 0/1 | Not started | - |
-| 11. Token Tracking | 0/1 | Not started | - |
-| 12. Openclaw Integration | 0/2 | Not started | - |
+| 7. HITL Framework | 1/1 | Complete | 2026-04-01 |
+| 8. Agent Runner | 1/1 | Complete | 2026-04-01 |
+| 9. LLM Worker Agents | 1/1 | Complete | 2026-04-01 |
+| 10. Orchestrator Upgrade | 1/1 | Complete | 2026-04-01 |
+| 11. Token Tracking | 1/1 | Complete | 2026-04-01 |
+| 12. Openclaw Integration | 1/1 | Complete | 2026-04-01 |
