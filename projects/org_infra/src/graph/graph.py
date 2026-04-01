@@ -186,8 +186,25 @@ def route_after_gate_pitch_evaluation(state: GraphState) -> str:
 # --- Graph builder ---
 
 
-def build_graph() -> Any:
-    """Build and compile the research-to-engineering handoff graph."""
+GATE_NODES = ["gate_discovery", "gate_definition", "gate_pitch_evaluation"]
+AGENT_NODES = ["uxr", "pm", "ds", "evaluation", "pressure_test", "feedback_synthesis"]
+
+
+def build_graph(config: "RunConfig | None" = None) -> Any:
+    """Build and compile the research-to-engineering handoff graph.
+
+    Args:
+        config: Optional RunConfig. Controls HITL interrupt behavior:
+            - autonomous: no interrupts
+            - supervised: interrupts at gate nodes
+            - guided: interrupts at all agent + gate nodes
+            - None: defaults to supervised
+    """
+    from src.graph.run_config import AutonomyLevel, RunConfig
+
+    if config is None:
+        config = RunConfig()
+
     graph = StateGraph(GraphState)
 
     graph.add_node("orchestrator_intake", orchestrator_intake)
@@ -231,4 +248,12 @@ def build_graph() -> Any:
     )
     graph.add_edge("assembler", END)
 
-    return graph.compile()
+    # Determine interrupt points based on autonomy level
+    interrupt_before: list[str] = []
+    if config.autonomy_level == AutonomyLevel.supervised:
+        interrupt_before = list(GATE_NODES)
+    elif config.autonomy_level == AutonomyLevel.guided:
+        interrupt_before = list(AGENT_NODES) + list(GATE_NODES)
+    # autonomous = no interrupts
+
+    return graph.compile(interrupt_before=interrupt_before or None)

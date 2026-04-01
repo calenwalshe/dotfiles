@@ -1,11 +1,12 @@
 import pytest
 
 from src.graph.graph import build_graph
+from src.graph.run_config import AutonomyLevel, RunConfig
 
 
 @pytest.fixture
 def graph():
-    return build_graph()
+    return build_graph(RunConfig(autonomy_level=AutonomyLevel.autonomous))
 
 
 @pytest.fixture

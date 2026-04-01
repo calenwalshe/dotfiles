@@ -3,12 +3,13 @@
 import pytest
 
 from src.graph.graph import build_graph
+from src.graph.run_config import AutonomyLevel, RunConfig
 from src.schemas.handoff_package import HandoffPackage
 
 
 @pytest.fixture
 def graph():
-    return build_graph()
+    return build_graph(RunConfig(autonomy_level=AutonomyLevel.autonomous))
 
 
 PROBLEM = "Users cannot discover relevant content in large catalogs"

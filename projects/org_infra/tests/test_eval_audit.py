@@ -4,6 +4,7 @@ import pytest
 
 from src.eval.eval_framework import EvalFramework
 from src.graph.graph import build_graph
+from src.graph.run_config import AutonomyLevel, RunConfig
 
 
 @pytest.fixture
@@ -14,7 +15,7 @@ def framework():
 @pytest.fixture
 def run_artifacts():
     """Run the full pipeline and return artifacts."""
-    graph = build_graph()
+    graph = build_graph(RunConfig(autonomy_level=AutonomyLevel.autonomous))
     result = graph.invoke({"problem_statement": "Users cannot discover relevant content"})
     return result["artifacts"]
 
