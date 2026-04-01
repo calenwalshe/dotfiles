@@ -12,7 +12,10 @@ from typing import Any
 
 from langgraph.graph import END, StateGraph
 
+from src.agents.orchestrator import ResearchOrchestrator
 from src.graph.state import GraphState
+
+_orchestrator = ResearchOrchestrator()
 
 
 def _metadata(agent_id: str, phase: str) -> dict:
@@ -185,61 +188,41 @@ def assembler_node(state: GraphState) -> dict[str, Any]:
 # --- Gate nodes ---
 
 
-def gate_discovery(state: GraphState) -> dict[str, Any]:
-    """Gate 1: Check discovery phase artifacts before advancing."""
+def _run_gate(state: GraphState, phase: str, next_phase: str) -> dict[str, Any]:
+    """Run Orchestrator gate evaluation for a given phase."""
     artifacts = state.get("artifacts", {})
-    required = ["uxr"]
-    missing = [a for a in required if a not in artifacts]
+    result = _orchestrator.evaluate_gate(phase, artifacts)
+
     decision = {
-        "gate": "discovery",
-        "decision": "reject" if missing else "approve",
-        "missing": missing,
+        "gate": phase,
+        "decision": result.gate_decision.value,
+        "cited_artifacts": result.cited_artifacts,
+        "gaps": result.gaps,
+        "rationale": result.rationale,
+        "current_understanding": result.current_understanding,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     decisions = list(state.get("gate_decisions", []))
     decisions.append(decision)
     update: dict[str, Any] = {"gate_decisions": decisions}
-    if not missing:
-        update["current_phase"] = "definition"
+    if result.gate_decision.value == "approve":
+        update["current_phase"] = next_phase
     return update
+
+
+def gate_discovery(state: GraphState) -> dict[str, Any]:
+    """Gate 1: Orchestrator evaluates discovery phase artifacts."""
+    return _run_gate(state, "discovery", "definition")
 
 
 def gate_definition(state: GraphState) -> dict[str, Any]:
-    """Gate 2: Check definition phase artifacts before advancing."""
-    artifacts = state.get("artifacts", {})
-    required = ["pm", "ds"]
-    missing = [a for a in required if a not in artifacts]
-    decision = {
-        "gate": "definition",
-        "decision": "reject" if missing else "approve",
-        "missing": missing,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    }
-    decisions = list(state.get("gate_decisions", []))
-    decisions.append(decision)
-    update: dict[str, Any] = {"gate_decisions": decisions}
-    if not missing:
-        update["current_phase"] = "pitch_evaluation"
-    return update
+    """Gate 2: Orchestrator evaluates definition phase artifacts."""
+    return _run_gate(state, "definition", "pitch_evaluation")
 
 
 def gate_pitch_evaluation(state: GraphState) -> dict[str, Any]:
-    """Gate 3: Check pitch & evaluation phase artifacts before advancing."""
-    artifacts = state.get("artifacts", {})
-    required = ["evaluation", "pressure_test", "feedback_synthesis"]
-    missing = [a for a in required if a not in artifacts]
-    decision = {
-        "gate": "pitch_evaluation",
-        "decision": "reject" if missing else "approve",
-        "missing": missing,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    }
-    decisions = list(state.get("gate_decisions", []))
-    decisions.append(decision)
-    update: dict[str, Any] = {"gate_decisions": decisions}
-    if not missing:
-        update["current_phase"] = "handoff"
-    return update
+    """Gate 3: Orchestrator evaluates pitch & evaluation phase artifacts."""
+    return _run_gate(state, "pitch_evaluation", "handoff")
 
 
 # --- Gate routing functions ---
