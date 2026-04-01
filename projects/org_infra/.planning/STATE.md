@@ -5,41 +5,43 @@
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** Engineering can begin implementation from handoff package without additional discovery
-**Current focus:** Phase 2 — Infrastructure
+**Current focus:** Phase 3 — Orchestrator
 
 ## Current Position
 
-Phase: 2 of 6 (Infrastructure)
-Plan: 0 of 2 in current phase
+Phase: 3 of 6 (Orchestrator)
+Plan: 0 of 1 in current phase
 Status: Ready to plan
-Last activity: 2026-04-01 — Phase 1 complete (schema + contracts)
+Last activity: 2026-04-01 — Phase 2 complete (graph skeleton + artifact store)
 
-Progress: [██░░░░░░░░] 12%
+Progress: [████░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~5 min
-- Total execution time: ~10 min
+- Total plans completed: 4
+- Average duration: ~4 min
+- Total execution time: ~18 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Schema & Contracts | 2 | ~10 min | ~5 min |
+| 2. Infrastructure | 2 | ~8 min | ~4 min |
 
 **Recent Trend:**
-- Last 2 plans: ~5 min, ~5 min
+- Last 4 plans: ~5, ~5, ~5, ~3 min
 - Trend: Stable
 
 ## Accumulated Context
 
 ### Decisions
 
-- Pydantic v2 as single source of truth for schema (JSON Schema derived)
-- Agent artifacts reuse sub-models from handoff_package.py
-- PressureTestArtifact enforces min 1 objection at schema level
+- Pydantic v2 single source of truth for schema
+- LangGraph StateGraph with TypedDict state
+- Filesystem-based artifact store ({run_id}/{agent_id}.json)
+- Gate nodes use conditional edges for approve/reject routing
 
 ### Pending Todos
 
@@ -52,7 +54,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Phase 1 complete — ready to plan Phase 2
+Stopped at: Phase 2 complete — ready to plan Phase 3
 Resume file: None
 
 ## Drive Log
@@ -62,3 +64,6 @@ Resume file: None
 | 2026-04-01 | 1 | discuss | complete (auto-context) |
 | 2026-04-01 | 1 | plan | complete (2 plans) |
 | 2026-04-01 | 1 | execute | complete (2 plans) |
+| 2026-04-01 | 2 | discuss | complete (auto-context) |
+| 2026-04-01 | 2 | plan | complete (2 plans) |
+| 2026-04-01 | 2 | execute | complete (2 plans) |
