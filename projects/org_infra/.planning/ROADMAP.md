@@ -114,6 +114,6 @@ Plans:
 | 1. Schema & Contracts | 2/2 | Complete | 2026-04-01 |
 | 2. Infrastructure | 2/2 | Complete | 2026-04-01 |
 | 3. Orchestrator | 1/1 | Complete | 2026-04-01 |
-| 4. Worker Agents | 0/6 | Not started | - |
+| 4. Worker Agents | 1/1 | Complete | 2026-04-01 |
 | 5. Integration | 0/2 | Not started | - |
 | 6. Eval & Validation | 0/3 | Not started | - |
