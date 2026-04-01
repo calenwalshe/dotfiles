@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** Engineering can begin implementation from handoff package without additional discovery
-**Current focus:** All phases complete
+**Current focus:** Phase 7 — HITL Framework
 
 ## Current Position
 
-Phase: 6 of 6 (Eval & Validation)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-04-01 — Phase 6 complete (eval framework + first run)
+Phase: 7 of 12 (HITL Framework)
+Plan: 0 of 2 in current phase
+Status: Ready to plan
+Last activity: 2026-04-01 — Milestone v1.1 initialized
 
-Progress: [██████████] 100%
+Progress: [██████░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 8 (v1.0)
 - Average duration: ~5 min
 - Total execution time: ~40 min
 
@@ -27,20 +27,17 @@ Progress: [██████████] 100%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Schema & Contracts | 2 | ~10 min | ~5 min |
-| 2. Infrastructure | 2 | ~8 min | ~4 min |
-| 3. Orchestrator | 1 | ~5 min | ~5 min |
-| 4. Worker Agents | 1 | ~8 min | ~8 min |
-| 5. Integration | 1 | ~5 min | ~5 min |
-| 6. Eval & Validation | 1 | ~5 min | ~5 min |
+| v1.0 (all) | 8 | ~40 min | ~5 min |
 
 ## Accumulated Context
 
 ### Decisions
 
-- All agents rule-based (no LLM) — LLM is future enhancement
-- Eval framework: rubric-based, 10 dimensions across 6 agents
-- First run: 10/10 eval checks, schema valid, 4 objections
+- `claude -p` subprocess pattern for agent delegation (not API SDK)
+- Run-level HITL autonomy dial (autonomous/supervised/guided)
+- Dual circuit breaker: token/time budget + eval score plateau
+- Openclaw container as deployment target (architecture unchanged)
+- v1.0 decisions carry forward (LangGraph, Pydantic, artifact store pattern)
 
 ### Pending Todos
 
@@ -48,21 +45,10 @@ None.
 
 ### Blockers/Concerns
 
-- Human sign-offs pending in runs/run-001/debrief.md (UX/taste eval dimension)
+None.
 
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: All 6 phases complete
+Stopped at: v1.1 milestone initialized — ready to plan Phase 7
 Resume file: None
-
-## Drive Log
-
-| Timestamp | Phase | Step | Result |
-|-----------|-------|------|--------|
-| 2026-04-01 | 1 | execute | complete (2 plans) |
-| 2026-04-01 | 2 | execute | complete (2 plans) |
-| 2026-04-01 | 3 | execute | complete (1 plan) |
-| 2026-04-01 | 4 | execute | complete (1 plan) |
-| 2026-04-01 | 5 | execute | complete (1 plan) |
-| 2026-04-01 | 6 | execute | complete (1 plan) |

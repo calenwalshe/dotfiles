@@ -3,94 +3,93 @@
 **Defined:** 2026-04-01
 **Core Value:** Engineering can begin implementation from handoff package without additional discovery
 
-## v1 Requirements
+## v1.0 Requirements (Validated)
 
-### Schema
+- [x] **SCHEMA-01**: Handoff package JSON schema defined with typed fields for all package sections
+- [x] **SCHEMA-02**: Schema reviewed and co-signed by at least one engineering consumer
+- [x] **AGENT-01**: Research Orchestrator gates all 4 phase transitions with citable decisions
+- [x] **AGENT-02**: UX Research agent produces typed artifacts
+- [x] **AGENT-03**: PM agent generates product pitch, requirements, and prioritization
+- [x] **AGENT-04**: PM agent completes async stakeholder review cycle end-to-end
+- [x] **AGENT-05**: DS agent produces quantitative feasibility assessment
+- [x] **AGENT-06**: Evaluation agent produces success criteria and test harness concept
+- [x] **AGENT-07**: Pressure Testing produces specific named objections
+- [x] **AGENT-08**: Feedback Synthesis surfaces alignments and conflicts
+- [x] **ORCH-01**: LangGraph state machine routes correctly through all 4 phases
+- [x] **INTG-01**: All 7 agents produce typed artifacts in artifact store
+- [x] **INTG-02**: Handoff package assembler produces schema-conformant output
+- [x] **EVAL-01**: Eval framework produces auditable quality scores
 
-- [ ] **SCHEMA-01**: Handoff package JSON schema defined with typed fields for all package sections
-- [ ] **SCHEMA-02**: Schema reviewed and co-signed by at least one engineering consumer
+## v1.1 Requirements
 
-### Agents
+### HITL Spectrum
 
-- [ ] **AGENT-01**: Research Orchestrator gates all 4 phase transitions with citable, auditable decisions referencing specific agent artifacts
-- [ ] **AGENT-02**: UX Research agent produces typed artifacts (personas, problem validation, user signal synthesis)
-- [ ] **AGENT-03**: PM agent generates product pitch, requirements definition, and prioritization
-- [ ] **AGENT-04**: PM agent completes at least one async stakeholder review cycle end-to-end via Slack/comms
-- [ ] **AGENT-05**: DS agent produces quantitative feasibility assessment, data availability, experiment design
-- [ ] **AGENT-06**: Evaluation agent produces success criteria, test harness concept, eval schema
-- [ ] **AGENT-07**: Pressure Testing agent produces adversarial challenge report with specific named objections to pitch claims
-- [ ] **AGENT-08**: Feedback Synthesis agent surfaces at least one alignment and one conflict between internal findings and stakeholder responses per run
+- [ ] **HITL-01**: Run accepts an autonomy level parameter (`autonomous`, `supervised`, `guided`)
+- [ ] **HITL-02**: In `supervised` mode, graph pauses at each phase gate for human review before advancing
+- [ ] **HITL-03**: In `guided` mode, graph pauses after every agent node for human review
+- [ ] **HITL-04**: In `autonomous` mode, graph runs without human stops until completion or circuit breaker
+- [ ] **HITL-05**: Circuit breaker stops autonomous runs when token/time budget is exhausted
+- [ ] **HITL-06**: Circuit breaker stops autonomous runs when eval scores plateau or degrade across retries
 
-### Orchestration
+### LLM Agents
 
-- [ ] **ORCH-01**: LangGraph state machine routes correctly through Discovery → Definition → Pitch & Evaluation → Handoff
-- [ ] **ORCH-02**: HITL checkpoints pause execution at all 4 phase gates for human review
-- [ ] **ORCH-03**: System resumes correctly from checkpoint when interrupted mid-run
+- [ ] **LLM-01**: Agent runner executes `claude -p` subprocesses with injected system prompt and artifact context
+- [ ] **LLM-02**: Agent runner captures output, writes to artifact store, handles timeout/failure
+- [ ] **LLM-03**: All 6 worker agents produce LLM-quality output via Claude Sonnet (not rule-based templates)
+- [ ] **LLM-04**: Orchestrator gate decisions use LLM reasoning (not just rule-based checks)
 
-### Integration
+### Token Tracking
 
-- [ ] **INTG-01**: All 7 agents produce typed artifacts persisted in shared artifact store
-- [ ] **INTG-02**: Handoff package assembler aggregates all agent artifacts into schema-conformant package
+- [ ] **TOKEN-01**: Per-agent token usage captured for each run (input tokens, output tokens)
+- [ ] **TOKEN-02**: Per-run total token cost calculated and stored in run artifacts
+- [ ] **TOKEN-03**: Token budget enforceable as a circuit breaker ceiling
 
-### Evaluation
+### Openclaw Integration
 
-- [ ] **EVAL-01**: Eval framework produces auditable quality scores per artifact type with rubric-based + LLM-as-judge assessment
+- [ ] **CLAW-01**: System runs inside openclaw container with correct filesystem paths
+- [ ] **CLAW-02**: Real comms adapter (Slack or email) replaces mock for PM agent stakeholder cycles
 
-### Validation
+## v2 Requirements (Deferred)
 
-- [ ] **VALID-01**: First real run handoff package confirmed actionable by at least one engineering consumer without additional discovery work
-
-## v2 Requirements
-
-### Scale
-
-- **SCALE-01**: Per-run token budget with hard ceiling and cost reporting
-- **SCALE-02**: Model tiering optimization (swap worker models for cost)
-- **SCALE-03**: Cross-product routing (narrow problems → single-agent fast path)
-
-### Observability
-
-- **OBS-01**: LangSmith trace logging for all agent calls
-- **OBS-02**: Per-phase quality dashboard
+- **HITL-PER-AGENT**: Per-agent HITL granularity (override run-level for specific agents)
+- **MODEL-SELECT**: Per-agent model selection (different Claude models for different agents)
+- **MULTI-RUN**: Multiple concurrent runs with isolated state
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Implementation code | Engineering's responsibility downstream — hard boundary |
-| Downstream engineering system | Treated as black box; handoff schema is the API contract |
-| Production deployment / DevOps | Not in contract scope |
-| Visual design / wireframing | Beyond text-based specifications |
-| Test suite implementation | Harness concept only — engineering implements tests |
-| Post-handoff operation | System's job ends at package delivery |
+| Implementation code | Engineering's responsibility downstream |
+| Downstream engineering system | Black box — handoff schema is the contract |
+| Per-agent HITL granularity | v1.1 uses run-level only — simpler mental model |
+| Multi-model per agent | All agents use Claude Sonnet via `claude -p` for v1.1 |
+| Visual design | Beyond text-based specifications |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCHEMA-01 | Phase 1 | Pending |
-| SCHEMA-02 | Phase 1 | Pending |
-| AGENT-01 | Phase 3 | Pending |
-| AGENT-02 | Phase 4 | Pending |
-| AGENT-03 | Phase 4 | Pending |
-| AGENT-04 | Phase 4 | Pending |
-| AGENT-05 | Phase 4 | Pending |
-| AGENT-06 | Phase 4 | Pending |
-| AGENT-07 | Phase 4 | Pending |
-| AGENT-08 | Phase 4 | Pending |
-| ORCH-01 | Phase 2 | Pending |
-| ORCH-02 | Phase 5 | Pending |
-| ORCH-03 | Phase 5 | Pending |
-| INTG-01 | Phase 2 | Pending |
-| INTG-02 | Phase 5 | Pending |
-| EVAL-01 | Phase 6 | Pending |
-| VALID-01 | Phase 6 | Pending |
+| HITL-01 | Phase 7 | Pending |
+| HITL-02 | Phase 7 | Pending |
+| HITL-03 | Phase 7 | Pending |
+| HITL-04 | Phase 7 | Pending |
+| HITL-05 | Phase 7 | Pending |
+| HITL-06 | Phase 7 | Pending |
+| LLM-01 | Phase 8 | Pending |
+| LLM-02 | Phase 8 | Pending |
+| LLM-03 | Phase 9 | Pending |
+| LLM-04 | Phase 10 | Pending |
+| TOKEN-01 | Phase 11 | Pending |
+| TOKEN-02 | Phase 11 | Pending |
+| TOKEN-03 | Phase 11 | Pending |
+| CLAW-01 | Phase 12 | Pending |
+| CLAW-02 | Phase 12 | Pending |
 
 **Coverage:**
-- v1 requirements: 17 total
-- Mapped to phases: 17
+- v1.1 requirements: 15 total
+- Mapped to phases: 15
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-01*
-*Last updated: 2026-04-01 after GSD import*
+*Last updated: 2026-04-01 after v1.1 milestone definition*
