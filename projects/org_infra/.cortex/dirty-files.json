@@ -118,6 +118,7 @@
     "/home/agent/projects/org_infra/src/consolidator/phases/embed.py",
     "/home/agent/projects/org_infra/src/consolidator/phases/corroborate.py",
     "/home/agent/projects/org_infra/src/consolidator/phases/contradict.py",
-    "/home/agent/projects/org_infra/src/consolidator/budget.py"
+    "/home/agent/projects/org_infra/src/consolidator/budget.py",
+    "/home/agent/projects/org_infra/docs/cortex/evals/knowledge-consolidation-engine/eval-plan.md"
   ]
 }
