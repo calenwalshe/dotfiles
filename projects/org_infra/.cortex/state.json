@@ -1,0 +1,31 @@
+{
+  "slug": "knowledge-consolidation-engine",
+  "mode": "execute",
+  "approval_status": "pending",
+  "active_contract": "docs/cortex/contracts/knowledge-consolidation-engine/contract-001.md",
+  "artifacts": [
+    "docs/cortex/clarify/knowledge-consolidation-engine/20260402T040000Z-clarify-brief.md",
+    "docs/cortex/research/knowledge-consolidation-engine/concept-20260402T040000Z.md",
+    "docs/cortex/specs/knowledge-consolidation-engine/spec.md",
+    "docs/cortex/specs/knowledge-consolidation-engine/gsd-handoff.md",
+    "docs/cortex/contracts/knowledge-consolidation-engine/contract-001.md"
+  ],
+  "prior_slug_artifacts": [
+    "docs/cortex/clarify/research-to-engineering-handoff/20260401T000000Z-clarify-brief.md",
+    "docs/cortex/research/research-to-engineering-handoff/concept-synthesis-20260401T000000Z.md",
+    "docs/cortex/research/research-to-engineering-handoff/autonomous-rnd-system-synthesis-20260402T000000Z.md",
+    "docs/cortex/research/research-to-engineering-handoff/RESEARCH-CONSOLIDATION.md",
+    "docs/cortex/specs/research-to-engineering-handoff/spec.md",
+    "docs/cortex/specs/research-to-engineering-handoff/gsd-handoff.md",
+    "docs/cortex/specs/research-to-engineering-handoff/system-design.md",
+    "docs/cortex/contracts/research-to-engineering-handoff/contract-001.md",
+    "docs/cortex/evals/research-to-engineering-handoff/eval-proposal.md",
+    "docs/cortex/evals/research-to-engineering-handoff/eval-plan.md"
+  ],
+  "gates": {
+    "clarify_complete": true,
+    "research_complete": true,
+    "spec_complete": true,
+    "contract_approved": true
+  }
+}
