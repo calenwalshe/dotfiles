@@ -1,0 +1,15 @@
+{
+  "dirty": [
+    "/home/agent/projects/chatgpt_tutor/.cortex/state.json",
+    "/home/agent/projects/chatgpt_tutor/MATH_VOICE_TUTOR_SPEC_v1.md",
+    "/home/agent/projects/chatgpt_tutor/PARENT_QUICK_REFERENCE.md",
+    "/home/agent/projects/chatgpt_tutor/docs/cortex/clarify/tutor-upload/20260403T223004Z-clarify-brief.md",
+    "/home/agent/agent-stack/tutor-upload/package.json",
+    "/home/agent/agent-stack/tutor-upload/Dockerfile",
+    "/home/agent/agent-stack/tutor-upload/server.js",
+    "/home/agent/agent-stack/docker-compose.yml",
+    "/home/agent/agent-stack/caddy/Caddyfile",
+    "/home/agent/.claude/projects/-home-agent/memory/project_chatgpt_tutor.md",
+    "/home/agent/.claude/projects/-home-agent/memory/MEMORY.md"
+  ]
+}
