@@ -20,8 +20,77 @@
 - Claude Code skill lives in `~/.claude/skills/cast-control/SKILL.md`
 - API is JSON over HTTP, FastAPI on port 8080
 - Icecast on port 8000, mount point `/vinyl.mp3`
-- Music files served from `/home/pi/music/` (configurable)
+- Music files served from `/home/calenwalshe/music/` (configurable)
 - All config in environment variables or a single `config.yaml`
+
+## Infrastructure — How to Reach the Pi
+
+### Tailscale Tunnel
+| Machine | Hostname | Tailscale IP | Role |
+|---------|----------|-------------|------|
+| VPS | agent-stack-dev | 100.77.189.123 | Claude Code host — sends commands |
+| Pi | jams | 100.109.14.3 | Home agent — controls Cast, captures audio |
+
+### SSH Access
+```bash
+ssh calenwalshe@100.109.14.3
+```
+- User: `calenwalshe`
+- Auth: SSH key (already in known_hosts)
+- No password needed
+
+### Cast Agent API
+```bash
+# From VPS over Tailscale:
+curl http://100.109.14.3:8080/devices
+curl -X POST http://100.109.14.3:8080/play -H 'Content-Type: application/json' -d '{"source":"youtube","query":"VIDEO_ID","device":"Kitchen speaker"}'
+curl -X POST http://100.109.14.3:8080/transport/pause
+curl http://100.109.14.3:8080/status
+```
+
+### Icecast Stream (vinyl/CD audio)
+```bash
+# From any device on the home LAN:
+http://192.168.86.X:8000/vinyl.mp3
+
+# From VPS over Tailscale:
+http://100.109.14.3:8000/vinyl.mp3
+```
+- Source password: stored in `~/cast-agent/config.yaml` on Pi
+- Cast devices use the LAN IP (192.168.86.X), not the Tailscale IP
+
+### Pi System Details
+| Field | Value |
+|-------|-------|
+| Model | Raspberry Pi 4 Model B Rev 1.5 (4GB RAM) |
+| OS | Debian 13 (Trixie) aarch64 |
+| Python | 3.13.5 |
+| ffmpeg | 7.1.2 |
+| Storage | 29GB SD card, 21GB free |
+| Agent path | `/home/calenwalshe/cast-agent/` |
+| Venv | `/home/calenwalshe/cast-agent/venv/` |
+| Music path | `/home/calenwalshe/music/` |
+| Systemd | `cast-agent.service` (enabled, auto-start) |
+
+### Cast Devices Discovered (2026-04-07)
+| Name | Model | Type | LAN IP |
+|------|-------|------|--------|
+| Kitchen speaker | Nest Audio | audio | 192.168.86.20 |
+| Den Wifi | Nest Wifi point | audio | 192.168.86.250 |
+| Play Room Wifi | Nest Wifi point | audio | 192.168.86.25 |
+| Den TV 3 | Chromecast | cast | 192.168.86.34 |
+| Upstairs TV | Chromecast HD | cast | 192.168.86.217 |
+| living space audio | Cast Group | group | 192.168.86.20 |
+
+### Equipment (confirmed)
+| Item | Model | Status |
+|------|-------|--------|
+| Receiver | Sony STR-DH190 (no tape-out/pre-out) | Have |
+| Turntable | Fluance RT80 (built-in preamp, LINE/PHONO switch) | Have |
+| USB Audio Interface | Behringer UCA202 | Ordered (Sweetwater L2154177101) |
+| Raspberry Pi | Pi 4B Rev 1.5, 4GB | Running |
+| RCA Y-splitter | TBD | Not yet ordered |
+| CD Player | TBD | Future purchase |
 
 ## Architecture Rules
 - Pi is the Cast controller — VPS never talks to Cast devices directly
