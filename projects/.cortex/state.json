@@ -1,0 +1,30 @@
+{
+  "slug": "whole-house-audio-llm-control",
+  "mode": "execute",
+  "approval_status": "approved",
+  "active_contract": "docs/cortex/contracts/whole-house-audio-llm-control/contract-001.md",
+  "artifacts": [
+    "docs/cortex/clarify/ai-music-control-google-home/20260407T012600Z-clarify-brief.md",
+    "docs/cortex/research/ai-music-control-google-home/concept-20260407T013200Z.md",
+    "docs/cortex/clarify/whole-house-audio-llm-control/20260407T014000Z-clarify-brief.md",
+    "docs/cortex/research/whole-house-audio-llm-control/concept-20260407T014500Z.md",
+    "docs/cortex/research/whole-house-audio-llm-control/hardware-budget-20260407T015500Z.md",
+    "docs/cortex/specs/whole-house-audio-llm-control/spec.md",
+    "docs/cortex/specs/whole-house-audio-llm-control/gsd-handoff.md",
+    "docs/cortex/contracts/whole-house-audio-llm-control/contract-001.md",
+    "docs/cortex/research/whole-house-audio-llm-control/validation-20260407T020500Z.md"
+  ],
+  "gates": {
+    "clarify_complete": true,
+    "research_complete": true,
+    "spec_complete": true,
+    "pr_opened": false,
+    "pr_merged": false
+  },
+  "github": {
+    "pr_number": null,
+    "pr_url": null,
+    "issue_number": null,
+    "branch": null
+  }
+}
