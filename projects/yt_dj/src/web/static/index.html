@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Stream Manager</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, monospace; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.4em; color: #fff; margin-bottom: 24px; letter-spacing: 1px; }
+  h1 span { color: #ff6b35; }
+
+  .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+  .toast { padding: 12px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 500; animation: slideIn 0.3s ease, fadeOut 0.5s ease 3.5s forwards; max-width: 420px; }
+  .toast-success { background: #0a3320; border: 1px solid #00cc66; color: #00ff80; }
+  .toast-info { background: #1a2233; border: 1px solid #4488cc; color: #88bbff; }
+  .toast-error { background: #331010; border: 1px solid #ff4444; color: #ff6666; }
+  @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes fadeOut { to { opacity: 0; } }
+
+  .fetch-bar { display: flex; gap: 10px; margin-bottom: 30px; }
+  .fetch-bar input { flex: 1; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-size: 14px; border-radius: 6px; }
+  .fetch-bar input:focus { outline: none; border-color: #ff6b35; }
+  .fetch-bar button { padding: 12px 24px; background: #ff6b35; color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; }
+  .fetch-bar button:hover { background: #e55a2b; }
+  .fetch-bar button:disabled { background: #555; cursor: not-allowed; }
+
+  .track { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .track-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .track-title { font-size: 1em; color: #fff; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; }
+  .badge { font-size: 0.75em; padding: 3px 10px; border-radius: 4px; font-weight: 600; }
+  .badge-downloading { background: #332200; color: #ffaa00; }
+  .badge-downloading::after { content: ''; display: inline-block; width: 10px; height: 10px; margin-left: 6px; border: 2px solid #ffaa00; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .badge-ready { background: #0a2a1a; color: #00cc66; }
+  .badge-error { background: #2a0a0a; color: #ff4444; }
+  .track-info { font-size: 0.8em; color: #666; margin-bottom: 12px; }
+  .track-info span { margin-right: 14px; }
+
+  /* Scrubber with range selection */
+  .player-wrap { margin: 12px 0 8px; }
+  .scrubber { width: 100%; height: 56px; position: relative; background: #1a1a1a; border-radius: 6px; overflow: hidden; user-select: none; }
+  .scrubber-region { position: absolute; top: 0; height: 100%; background: rgba(255,107,53,0.15); border-left: 3px solid #ff6b35; border-right: 3px solid #ff6b35; pointer-events: none; }
+  .scrubber-handle { position: absolute; top: 0; width: 14px; height: 100%; cursor: ew-resize; z-index: 10; display: flex; align-items: center; justify-content: center; }
+  .scrubber-handle::after { content: ''; width: 4px; height: 24px; background: #ff6b35; border-radius: 2px; }
+  .scrubber-handle:hover::after { background: #ff8855; width: 6px; }
+  .scrubber-playhead { position: absolute; top: 0; width: 2px; height: 100%; background: #fff; pointer-events: none; z-index: 5; }
+  .scrubber-labels { display: flex; justify-content: space-between; padding: 0 4px; position: absolute; bottom: 4px; width: 100%; pointer-events: none; }
+  .scrubber-labels span { font-size: 0.7em; color: #666; }
+  .scrubber-range-label { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: #ff6b35; pointer-events: none; z-index: 6; white-space: nowrap; }
+  .scrubber-click-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: pointer; }
+
+  .controls { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .btn { padding: 6px 14px; border: none; font-size: 0.8em; font-weight: 500; cursor: pointer; border-radius: 4px; }
+  .btn-play { background: #222; border: 1px solid #444; color: #fff; }
+  .btn-play:hover { border-color: #ff6b35; }
+  .btn-play.playing { border-color: #ff6b35; color: #ff6b35; }
+  .btn-save { background: #1a3322; border: 1px solid #2a5533; color: #44cc77; font-weight: 600; }
+  .btn-save:hover { background: #224433; border-color: #44cc77; }
+  .btn-preview { background: #1a2233; border: 1px solid #2a3355; color: #6699cc; }
+  .btn-preview:hover { border-color: #6699cc; }
+  .btn-delete { padding: 4px 12px; background: #1a1010; border: 1px solid #331a1a; color: #884444; font-size: 0.75em; cursor: pointer; border-radius: 4px; }
+  .btn-delete:hover { color: #ff4444; border-color: #ff4444; }
+  .clip-name { padding: 5px 10px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-size: 0.8em; border-radius: 4px; width: 200px; }
+  .clip-name:focus { outline: none; border-color: #ff6b35; }
+  .range-display { font-size: 0.8em; color: #888; margin-left: 4px; }
+
+  /* Saved clips */
+  .clips-section { margin-top: 40px; border-top: 1px solid #222; padding-top: 20px; }
+  .section-label { font-size: 0.85em; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .clip-row { display: flex; align-items: center; gap: 12px; padding: 8px 14px; background: #141414; border: 1px solid #1a331a; border-radius: 6px; margin-bottom: 6px; }
+  .clip-row .cl-name { flex: 1; font-size: 0.9em; color: #fff; }
+  .clip-row .cl-meta { font-size: 0.75em; color: #666; }
+
+  .pills { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { font-size: 0.7em; padding: 2px 10px; border-radius: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pill-genre { background: #1a2233; color: #6699cc; border: 1px solid #2a3355; }
+  .pill-mood { background: #1a3322; color: #66aa88; border: 1px solid #2a4433; }
+  .artist-label { color: #aa8855; }
+
+  .empty { color: #444; font-style: italic; padding: 30px; text-align: center; }
+  .stats { font-size: 0.8em; color: #555; margin-bottom: 16px; }
+  .stats span { color: #888; }
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="container">
+  <h1><span>///</span> music stream manager</h1>
+  <div class="stats" id="stats"></div>
+  <div class="fetch-bar">
+    <input type="text" id="url-input" placeholder="Paste YouTube URL..." />
+    <button id="fetch-btn" onclick="fetchTrack()">Fetch</button>
+  </div>
+  <div id="track-list"></div>
+  <div class="clips-section">
+    <div class="section-label">Saved Clips</div>
+    <div id="clips-list"></div>
+  </div>
+</div>
+
+<script>
+let prevStatuses = {};
+let audios = {};
+let ranges = {}; // track_id -> {start, end, duration}
+let dragging = null; // {id, handle: 'start'|'end'}
+
+function fmt(s) {
+  if (!s || s <= 0) return '0:00';
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = Math.floor(s % 60);
+  if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  return m + ':' + String(sec).padStart(2,'0');
+}
+
+function fmtSize(b) {
+  if (!b) return '';
+  return b > 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB';
+}
+
+function toast(msg, type) {
+  const c = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+async function fetchTrack() {
+  const input = document.getElementById('url-input');
+  const btn = document.getElementById('fetch-btn');
+  const url = input.value.trim();
+  if (!url) return;
+  btn.disabled = true; btn.textContent = 'Fetching...';
+  try {
+    const res = await fetch('/api/fetch', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}) });
+    if (!res.ok) { const e = await res.json(); toast(e.detail||'Error','error'); return; }
+    input.value = '';
+    toast('Download started','info');
+    startPolling();
+  } catch(e) { toast('Failed: '+e,'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Fetch'; }
+}
+
+function getRange(id, dur) {
+  if (!ranges[id]) ranges[id] = { start: 0, end: dur, duration: dur };
+  return ranges[id];
+}
+
+function pctToTime(pct, dur) { return Math.max(0, Math.min(dur, pct * dur)); }
+
+function scrubberMouseDown(id, handle, e) {
+  e.preventDefault();
+  dragging = { id, handle };
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', onDragEnd);
+}
+
+function onDrag(e) {
+  if (!dragging) return;
+  const { id, handle } = dragging;
+  const el = document.getElementById('scrubber-' + id);
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const r = ranges[id];
+  if (!r) return;
+  const t = pctToTime(pct, r.duration);
+  if (handle === 'start') r.start = Math.min(t, r.end - 1);
+  else r.end = Math.max(t, r.start + 1);
+  updateScrubberUI(id);
+}
+
+function onDragEnd() {
+  dragging = null;
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', onDragEnd);
+}
+
+function scrubberClick(id, e) {
+  if (dragging) return;
+  const el = document.getElementById('scrubber-' + id);
+  const rect = el.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const audio = audios[id];
+  if (audio) {
+    audio.currentTime = pct * (audio.duration || ranges[id]?.duration || 0);
+    if (audio.paused) togglePlay(id);
+  }
+}
+
+function updateScrubberUI(id) {
+  const r = ranges[id];
+  if (!r) return;
+  const startPct = (r.start / r.duration) * 100;
+  const endPct = (r.end / r.duration) * 100;
+
+  const region = document.getElementById('sregion-' + id);
+  const handleL = document.getElementById('shandle-l-' + id);
+  const handleR = document.getElementById('shandle-r-' + id);
+  const rangeLabel = document.getElementById('srlabel-' + id);
+  const rangeDisp = document.getElementById('rdisp-' + id);
+
+  if (region) { region.style.left = startPct+'%'; region.style.width = (endPct-startPct)+'%'; }
+  if (handleL) handleL.style.left = 'calc('+startPct+'% - 7px)';
+  if (handleR) handleR.style.left = 'calc('+endPct+'% - 7px)';
+  if (rangeLabel) rangeLabel.textContent = fmt(r.start) + ' — ' + fmt(r.end) + ' (' + fmt(r.end - r.start) + ')';
+  if (rangeDisp) rangeDisp.textContent = fmt(r.start) + ' → ' + fmt(r.end) + ' (' + fmt(r.end - r.start) + ')';
+
+  // Update playhead
+  const audio = audios[id];
+  if (audio && audio.duration) {
+    const phPct = (audio.currentTime / audio.duration) * 100;
+    const ph = document.getElementById('splayhead-' + id);
+    if (ph) ph.style.left = phPct + '%';
+    const timeL = document.getElementById('stimel-' + id);
+    if (timeL) timeL.textContent = fmt(audio.currentTime);
+  }
+}
+
+function togglePlay(id) {
+  Object.entries(audios).forEach(([k,a]) => {
+    if (k !== id && !a.paused) { a.pause(); const b = document.getElementById('pbtn-'+k); if(b){b.textContent='Play';b.classList.remove('playing');} }
+  });
+  let audio = audios[id];
+  if (!audio) {
+    audio = new Audio('/api/audio/' + id);
+    audios[id] = audio;
+    audio.addEventListener('timeupdate', () => updateScrubberUI(id));
+    audio.addEventListener('ended', () => {
+      const b = document.getElementById('pbtn-'+id); if(b){b.textContent='Play';b.classList.remove('playing');}
+    });
+  }
+  if (audio.paused) {
+    audio.play();
+    const b = document.getElementById('pbtn-'+id); if(b){b.innerHTML='Pause';b.classList.add('playing');}
+  } else {
+    audio.pause();
+    const b = document.getElementById('pbtn-'+id); if(b){b.textContent='Play';b.classList.remove('playing');}
+  }
+}
+
+function previewRange(id) {
+  const r = ranges[id];
+  if (!r) return;
+  let audio = audios[id];
+  if (!audio) {
+    audio = new Audio('/api/audio/' + id);
+    audios[id] = audio;
+    audio.addEventListener('timeupdate', () => {
+      updateScrubberUI(id);
+      if (audio.currentTime >= r.end) { audio.pause(); const b=document.getElementById('pbtn-'+id); if(b){b.textContent='Play';b.classList.remove('playing');} }
+    });
+    audio.addEventListener('ended', () => { const b=document.getElementById('pbtn-'+id); if(b){b.textContent='Play';b.classList.remove('playing');} });
+  }
+  audio.currentTime = r.start;
+  // Set up end-stop
+  const stopHandler = () => {
+    if (audio.currentTime >= r.end) { audio.pause(); audio.removeEventListener('timeupdate', stopHandler); const b=document.getElementById('pbtn-'+id); if(b){b.textContent='Play';b.classList.remove('playing');} }
+  };
+  audio.addEventListener('timeupdate', stopHandler);
+  audio.play();
+  const b = document.getElementById('pbtn-'+id); if(b){b.innerHTML='Pause';b.classList.add('playing');}
+}
+
+async function saveClip(id) {
+  const r = ranges[id];
+  if (!r) return;
+  const nameInput = document.getElementById('clipname-' + id);
+  const name = nameInput ? nameInput.value.trim() : '';
+  try {
+    const res = await fetch('/api/save-clip', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ track_id: id, start_s: r.start, end_s: r.end, name }),
+    });
+    if (!res.ok) { const e = await res.json(); toast(e.detail||'Error','error'); return; }
+    const data = await res.json();
+    toast('Saved: ' + data.filename + ' (' + fmt(data.duration_s) + ', ' + fmtSize(data.file_size) + ')', 'success');
+    refreshClips();
+  } catch(e) { toast('Save failed: '+e, 'error'); }
+}
+
+function renderTrack(t) {
+  const badgeCls = t.status==='ready'?'badge-ready':t.status==='downloading'?'badge-downloading':'badge-error';
+  const badgeText = t.status==='downloading'?'downloading':t.status==='ready'?'ready':'error';
+
+  // Genre/mood pills
+  let pills = '';
+  if (t.genre && t.genre !== 'unclassified') pills += `<span class="pill pill-genre">${esc(t.genre)}</span>`;
+  if (t.mood && t.mood !== 'neutral') pills += `<span class="pill pill-mood">${esc(t.mood)}</span>`;
+
+  let html = `<div class="track">
+    <div class="track-header">
+      <div class="track-title" title="${esc(t.title)}">${esc(t.title)}</div>
+      <span class="badge ${badgeCls}">${badgeText}</span>
+    </div>
+    <div class="track-info">`;
+
+  if (t.artist) html += `<span class="artist-label">${esc(t.artist)}</span>`;
+  if (t.status==='ready') {
+    html += `<span>${fmt(t.duration_s)}</span>`;
+    if (t.file_size) html += `<span>${fmtSize(t.file_size)}</span>`;
+  } else if (t.status==='downloading') {
+    html += `<span>Downloading and converting audio...</span>`;
+  } else {
+    html += `<span style="color:#ff4444">${esc(t.status)}</span>`;
+  }
+  html += `</div>`;
+  if (pills) html += `<div class="pills">${pills}</div>`;
+
+  if (t.status === 'ready') {
+    const r = getRange(t.id, t.duration_s);
+    const startPct = (r.start/r.duration)*100;
+    const endPct = (r.end/r.duration)*100;
+    // Default clip name: Artist - Title
+    const defaultClipName = t.title || '';
+    html += `
+      <div class="player-wrap">
+        <div class="scrubber" id="scrubber-${t.id}">
+          <div class="scrubber-click-area" onclick="scrubberClick('${t.id}',event)"></div>
+          <div class="scrubber-region" id="sregion-${t.id}" style="left:${startPct}%;width:${endPct-startPct}%"></div>
+          <div class="scrubber-handle" id="shandle-l-${t.id}" style="left:calc(${startPct}% - 7px)" onmousedown="scrubberMouseDown('${t.id}','start',event)"></div>
+          <div class="scrubber-handle" id="shandle-r-${t.id}" style="left:calc(${endPct}% - 7px)" onmousedown="scrubberMouseDown('${t.id}','end',event)"></div>
+          <div class="scrubber-playhead" id="splayhead-${t.id}" style="left:0%"></div>
+          <div class="scrubber-range-label" id="srlabel-${t.id}">${fmt(r.start)} — ${fmt(r.end)} (${fmt(r.end-r.start)})</div>
+          <div class="scrubber-labels"><span id="stimel-${t.id}">0:00</span><span>${fmt(t.duration_s)}</span></div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-play" id="pbtn-${t.id}" onclick="togglePlay('${t.id}')">Play</button>
+          <button class="btn btn-preview" onclick="previewRange('${t.id}')">Preview selection</button>
+          <span class="range-display" id="rdisp-${t.id}">${fmt(r.start)} → ${fmt(r.end)} (${fmt(r.end-r.start)})</span>
+        </div>
+        <div class="controls" style="margin-top:6px">
+          <input class="clip-name" id="clipname-${t.id}" placeholder="Clip name" value="${esc(defaultClipName)}" />
+          <button class="btn btn-save" onclick="saveClip('${t.id}')">Save clip</button>
+          <button class="btn-delete" onclick="deleteTrack('${t.id}')">delete source</button>
+        </div>
+      </div>`;
+  } else {
+    html += `<div class="controls"><button class="btn-delete" onclick="deleteTrack('${t.id}')">delete</button></div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+async function deleteTrack(id) {
+  if (!confirm('Delete this track?')) return;
+  if (audios[id]) { audios[id].pause(); delete audios[id]; }
+  delete ranges[id];
+  await fetch('/api/tracks/'+id, {method:'DELETE'});
+  toast('Deleted','info');
+  refresh();
+}
+
+async function refresh() {
+  const res = await fetch('/api/tracks');
+  const tracks = await res.json();
+  for (const t of tracks) {
+    if (prevStatuses[t.id]==='downloading' && t.status==='ready')
+      toast(t.title+' — '+fmt(t.duration_s)+', '+fmtSize(t.file_size),'success');
+    prevStatuses[t.id] = t.status;
+  }
+  const ready = tracks.filter(t => t.status==='ready');
+  const totalDur = ready.reduce((s,t) => s+(t.duration_s||0), 0);
+  document.getElementById('stats').innerHTML = `<span>${ready.length}</span> sources &middot; <span>${fmt(totalDur)}</span> total`;
+  const tl = document.getElementById('track-list');
+  if (!tracks.length) tl.innerHTML = '<div class="empty">No tracks yet. Paste a YouTube URL above.</div>';
+  else tl.innerHTML = tracks.map(renderTrack).join('');
+  Object.keys(audios).forEach(id => updateScrubberUI(id));
+  refreshClips();
+}
+
+async function refreshClips() {
+  const res = await fetch('/api/clips');
+  const clips = await res.json();
+  const cl = document.getElementById('clips-list');
+  if (!clips.length) { cl.innerHTML = '<div class="empty">No saved clips yet.</div>'; return; }
+  cl.innerHTML = clips.map(c => `
+    <div class="clip-row">
+      <div class="cl-name">${esc(c.filename)}</div>
+      <div class="cl-meta">${fmt(c.duration_s)} &middot; ${fmtSize(c.file_size)}</div>
+    </div>
+  `).join('');
+}
+
+let pollId = null;
+function startPolling() {
+  if (pollId) return;
+  refresh();
+  pollId = setInterval(async () => {
+    const res = await fetch('/api/tracks');
+    const tracks = await res.json();
+    refresh();
+    if (!tracks.some(t => t.status==='downloading')) { clearInterval(pollId); pollId = null; }
+  }, 2000);
+}
+
+document.getElementById('url-input').addEventListener('keydown', e => { if(e.key==='Enter') fetchTrack(); });
+refresh();
+</script>
+</body>
+</html>

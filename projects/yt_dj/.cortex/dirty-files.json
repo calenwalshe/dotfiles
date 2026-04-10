@@ -52,6 +52,10 @@
     "/home/agent/projects/yt_dj/.planning/config.json",
     "/home/agent/projects/yt_dj/.planning/phases/01-self-hosted-radio/01-CONTEXT.md",
     "/home/agent/projects/yt_dj/.planning/phases/02-self-hosted-radio/02-CONTEXT.md",
-    "/home/agent/projects/yt_dj/.planning/phases/03-self-hosted-radio/03-CONTEXT.md"
+    "/home/agent/projects/yt_dj/.planning/phases/03-self-hosted-radio/03-CONTEXT.md",
+    "/home/agent/agent-stack/icecast/icecast.xml",
+    "/home/agent/agent-stack/liquidsoap/radio.liq",
+    "/home/agent/agent-stack/docker-compose.yml",
+    "/home/agent/projects/yt_dj/src/web/static/radio.html"
   ]
 }

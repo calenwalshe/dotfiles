@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>radio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #c8c8c8;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      padding: 24px;
+    }
+
+    .cam-wrap {
+      width: min(640px, 100%);
+      aspect-ratio: 16/9;
+      background: #111;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cam-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .cam-wrap img.loaded { opacity: 1; }
+
+    .cam-location {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .cam-error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+
+    .cam-wrap.error .cam-error { display: flex; }
+    .cam-wrap.error img { opacity: 0; }
+
+    .player-row {
+      width: min(640px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    audio {
+      width: 100%;
+      height: 32px;
+      filter: invert(0.85) sepia(0.1);
+    }
+
+    .track-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 18px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #c0392b;
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .track-name {
+      color: #888;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      letter-spacing: 0.03em;
+    }
+
+    .footer {
+      color: #2a2a2a;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cam-wrap" id="camWrap">
+    <img id="camImg" alt="" />
+    <div class="cam-location" id="camLocation"></div>
+    <div class="cam-error">no feed</div>
+  </div>
+
+  <div class="player-row">
+    <audio id="player" controls autoplay preload="none">
+      <source src="/stream.mp3" type="audio/mpeg">
+    </audio>
+    <div class="track-info">
+      <div class="live-dot"></div>
+      <div class="track-name" id="trackName">connecting…</div>
+    </div>
+  </div>
+
+  <div class="footer">live</div>
+
+<script>
+  const camImg = document.getElementById('camImg');
+  const camWrap = document.getElementById('camWrap');
+  const camLocation = document.getElementById('camLocation');
+  const trackName = document.getElementById('trackName');
+
+  // --- Track metadata from Icecast ---
+  async function refreshTrack() {
+    try {
+      const resp = await fetch('/status-json.xsl');
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const source = data?.icestats?.source;
+      if (!source) return;
+      const title = source.title || source.artist || '';
+      if (title) trackName.textContent = title;
+    } catch (_) {}
+  }
+
+  // --- Webcam ---
+  let currentCamUrl = null;
+  let currentLocation = '';
+
+  async function fetchCamUrl() {
+    try {
+      const resp = await fetch('/cam-url');
+      if (!resp.ok) throw new Error(resp.status);
+      const data = await resp.json();
+      currentCamUrl = data.url;
+      currentLocation = [data.location, data.country].filter(Boolean).join(', ');
+    } catch (_) {
+      currentCamUrl = null;
+    }
+  }
+
+  function refreshCamImage() {
+    if (!currentCamUrl) {
+      camWrap.classList.add('error');
+      return;
+    }
+    camWrap.classList.remove('error');
+    const url = currentCamUrl + '?t=' + Date.now();
+    const next = new Image();
+    next.onload = () => {
+      camImg.src = next.src;
+      camImg.classList.add('loaded');
+      camLocation.textContent = currentLocation;
+      camWrap.classList.remove('error');
+    };
+    next.onerror = () => {
+      camWrap.classList.add('error');
+    };
+    next.src = url;
+  }
+
+  camImg.onerror = () => camWrap.classList.add('error');
+
+  // Bootstrap
+  (async () => {
+    await fetchCamUrl();
+    refreshCamImage();
+    refreshTrack();
+  })();
+
+  // Refresh JPEG every 60s
+  setInterval(refreshCamImage, 60_000);
+
+  // Refresh signed URL every 8 min (Windy free tier: 10-min expiry)
+  setInterval(async () => {
+    await fetchCamUrl();
+    refreshCamImage();
+  }, 8 * 60_000);
+
+  // Refresh track metadata every 15s
+  setInterval(refreshTrack, 15_000);
+</script>
+</body>
+</html>
