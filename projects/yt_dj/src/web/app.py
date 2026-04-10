@@ -468,58 +468,89 @@ async def cam_url():
         )
 
     cameras = _load_cameras()
-    windy_cams = [c for c in cameras if c.get("source") == "windy"]
-    if not windy_cams:
+    # Prefer pedestrian/square city cams; fall back to any city cam
+    pedestrian_cams = [c for c in cameras if c.get("source") == "windy"
+                       and c.get("category") == "city"
+                       and any(t in c.get("tags", []) for t in ("pedestrian", "square", "crossing"))]
+    city_cams = [c for c in cameras if c.get("source") == "windy" and c.get("category") == "city"]
+    pool = pedestrian_cams if pedestrian_cams else city_cams
+    if not pool:
         raise HTTPException(503, "No Windy cameras configured")
 
-    cam = random.choice(windy_cams)
+    cam = random.choice(pool)
     api_key = _load_windy_key()
 
     async def _search(params: dict):
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(
                 "https://api.windy.com/webcams/api/v3/webcams",
-                params={"lang": "en", "limit": 5, "offset": 0,
-                        "include": "images,player", **params},
+                params={"lang": "en", "limit": 10, "offset": 0,
+                        "include": "images,player,categories", **params},
                 headers={"x-windy-api-key": api_key},
             )
             resp.raise_for_status()
             return resp.json().get("webcams", [])
 
+    def _extract(webcam: dict, cam_name: str, cam_country: str) -> dict | None:
+        preview = webcam.get("images", {}).get("current", {}).get("preview")
+        webcam_id = webcam.get("webcamId") or webcam.get("id")
+        player_day = webcam.get("player", {}).get("day")
+        player_embed = (
+            player_day if isinstance(player_day, str) else
+            (f"https://webcams.windy.com/webcams/public/embed/player/{webcam_id}/" if webcam_id else None)
+        )
+        if not (preview or player_embed):
+            return None
+        # Prefer cams with player embed (live video) over still-only
+        cats = [c.get("name", "").lower() for c in webcam.get("categories", [])]
+        return {
+            "url": preview,
+            "player_embed": player_embed,
+            "webcam_id": str(webcam_id) if webcam_id else None,
+            "location": cam_name,
+            "country": cam_country,
+            "windy_call_count": _windy_call_count,
+            "has_video": bool(player_embed),
+            "windy_cats": cats,
+        }
+
     lat, lon = cam["lat"], cam["lon"]
     try:
-        webcams = await _search({"nearTo": f"{lat},{lon}", "radius": 100, "sortBy": "popularity"})
+        # Search with city category filter near chosen location
+        webcams = await _search({
+            "nearTo": f"{lat},{lon}", "radius": 50,
+            "categories": "city", "sortBy": "popularity",
+        })
     except httpx.HTTPError as e:
         logger.error(f"Windy API error for {cam['name']}: {e}")
         raise HTTPException(503, f"Windy API unavailable: {e}")
 
+    # Widen radius if nothing nearby
     if not webcams:
         try:
-            webcams = await _search({"sortBy": "popularity"})
+            webcams = await _search({
+                "nearTo": f"{lat},{lon}", "radius": 200,
+                "categories": "city", "sortBy": "popularity",
+            })
+        except httpx.HTTPError:
+            pass
+
+    # Last resort: global popular city cams
+    if not webcams:
+        try:
+            webcams = await _search({"categories": "city", "sortBy": "popularity"})
         except httpx.HTTPError:
             pass
 
     if not webcams:
         raise HTTPException(503, "No webcams available from Windy API")
 
-    for webcam in webcams:
-        preview = webcam.get("images", {}).get("current", {}).get("preview")
-        webcam_id = webcam.get("webcamId") or webcam.get("id")
-        # Windy player embed URL — shows live video for cams that support it
-        player_day = webcam.get("player", {}).get("day")
-        player_embed = (
-            player_day if isinstance(player_day, str) else
-            (f"https://webcams.windy.com/webcams/public/embed/player/{webcam_id}/" if webcam_id else None)
-        )
-        if preview or player_embed:
-            return JSONResponse({
-                "url": preview,
-                "player_embed": player_embed,
-                "webcam_id": str(webcam_id) if webcam_id else None,
-                "location": cam["name"],
-                "country": cam.get("country", ""),
-                "windy_call_count": _windy_call_count,
-            })
+    # Sort: player-embed cams first (live video), then still-image cams
+    candidates = [r for w in webcams if (r := _extract(w, cam["name"], cam.get("country", "")))]
+    candidates.sort(key=lambda x: 0 if x["has_video"] else 1)
+
+    if candidates:
+        return JSONResponse(candidates[0])
 
     raise HTTPException(503, "No webcam data available")
 
