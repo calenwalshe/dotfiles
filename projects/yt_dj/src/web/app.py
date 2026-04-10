@@ -455,10 +455,10 @@ async def radio_page():
 
 @app.get("/cam-url")
 async def cam_url():
-    """Return a fresh Windy webcam JPEG URL for a randomly chosen global location.
+    """Return Windy webcam data for a randomly chosen global location.
 
-    Calls the Windy v3 API server-side so the API key never reaches the browser
-    and CORS restrictions are bypassed. Logs call count for rate-limit monitoring.
+    Returns player embed URL (iframe-able) and preview JPEG. Calls Windy v3 API
+    server-side so the API key never reaches the browser and CORS is bypassed.
     """
     global _windy_call_count
     _windy_call_count += 1
@@ -475,70 +475,53 @@ async def cam_url():
     cam = random.choice(windy_cams)
     api_key = _load_windy_key()
 
-    # Search Windy API for webcams near this location
-    lat, lon = cam["lat"], cam["lon"]
-    try:
+    async def _search(params: dict):
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(
                 "https://api.windy.com/webcams/api/v3/webcams",
-                params={
-                    "lang": "en",
-                    "limit": 5,
-                    "offset": 0,
-                    "nearTo": f"{lat},{lon}",
-                    "radius": 100,
-                    "include": "images",
-                    "sortBy": "popularity",
-                },
+                params={"lang": "en", "limit": 5, "offset": 0,
+                        "include": "images,player", **params},
                 headers={"x-windy-api-key": api_key},
             )
             resp.raise_for_status()
-            data = resp.json()
+            return resp.json().get("webcams", [])
+
+    lat, lon = cam["lat"], cam["lon"]
+    try:
+        webcams = await _search({"nearTo": f"{lat},{lon}", "radius": 100, "sortBy": "popularity"})
     except httpx.HTTPError as e:
         logger.error(f"Windy API error for {cam['name']}: {e}")
         raise HTTPException(503, f"Windy API unavailable: {e}")
 
-    webcams = data.get("webcams", [])
     if not webcams:
-        # Try a broader search without location filter
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
-                resp = await client.get(
-                    "https://api.windy.com/webcams/api/v3/webcams",
-                    params={
-                        "lang": "en",
-                        "limit": 5,
-                        "offset": 0,
-                        "include": "images",
-                        "sortBy": "popularity",
-                    },
-                    headers={"x-windy-api-key": api_key},
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                webcams = data.get("webcams", [])
+            webcams = await _search({"sortBy": "popularity"})
         except httpx.HTTPError:
             pass
 
     if not webcams:
         raise HTTPException(503, "No webcams available from Windy API")
 
-    # Pick first webcam with a preview image
     for webcam in webcams:
-        preview = (
-            webcam.get("images", {})
-            .get("current", {})
-            .get("preview")
+        preview = webcam.get("images", {}).get("current", {}).get("preview")
+        webcam_id = webcam.get("webcamId") or webcam.get("id")
+        # Windy player embed URL — shows live video for cams that support it
+        player_day = webcam.get("player", {}).get("day")
+        player_embed = (
+            player_day if isinstance(player_day, str) else
+            (f"https://webcams.windy.com/webcams/public/embed/player/{webcam_id}/" if webcam_id else None)
         )
-        if preview:
+        if preview or player_embed:
             return JSONResponse({
                 "url": preview,
+                "player_embed": player_embed,
+                "webcam_id": str(webcam_id) if webcam_id else None,
                 "location": cam["name"],
                 "country": cam.get("country", ""),
                 "windy_call_count": _windy_call_count,
             })
 
-    raise HTTPException(503, "No webcam preview images available")
+    raise HTTPException(503, "No webcam data available")
 
 
 @app.delete("/api/tracks/{track_id}")
