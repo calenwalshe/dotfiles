@@ -10,12 +10,15 @@ import random
 import re
 import sqlite3
 import subprocess
+import threading
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
 import httpx
+import psutil
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -29,15 +32,119 @@ MUSIC_DIR = PROJECT_DIR / "music" / "library"
 DB_PATH = PROJECT_DIR / "music" / "library.db"
 CAMERAS_PATH = PROJECT_DIR / "config" / "cameras.json"
 WEBCAMS_CONFIG_PATH = PROJECT_DIR / "config" / "webcams.json"
+RESOURCES_LOG = PROJECT_DIR / "logs" / "resources.jsonl"
 
 # Rate-limit counter for Windy API calls (in-memory, resets on restart)
 _windy_call_count = 0
 _WINDY_DAILY_WARN_THRESHOLD = 700
 
+# Resource monitor config
+_POLL_INTERVAL_S = 600          # 10 minutes
+_MAX_ENTRIES = 3 * 24 * 6      # 3 days at 10-min intervals = 432 entries
+_NET_IFACE = "enp1s0"          # main server interface
+_RADIO_PROCS = ("liquidsoap", "icecast2")  # processes to track
+
 MUSIC_DIR.mkdir(parents=True, exist_ok=True)
+(PROJECT_DIR / "logs").mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Music Stream Manager")
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
+
+
+# ---------------------------------------------------------------------------
+# Resource monitor — background thread, polls every 10 min
+# ---------------------------------------------------------------------------
+
+_prev_net: dict | None = None
+_prev_net_time: float = 0.0
+
+
+def _sample_resources() -> dict:
+    """Collect one resource sample. Returns a dict ready to log."""
+    global _prev_net, _prev_net_time
+
+    ts = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+    # System CPU / RAM
+    cpu_pct = psutil.cpu_percent(interval=2)
+    mem = psutil.virtual_memory()
+
+    # Network bandwidth — delta bytes over elapsed interval
+    net_now = psutil.net_io_counters(pernic=True).get(_NET_IFACE)
+    now = time.monotonic()
+    bw_up_kbps = bw_down_kbps = 0.0
+    if net_now and _prev_net:
+        elapsed = max(now - _prev_net_time, 1)
+        bw_up_kbps   = (net_now.bytes_sent - _prev_net.bytes_sent) / elapsed / 1024
+        bw_down_kbps = (net_now.bytes_recv - _prev_net.bytes_recv) / elapsed / 1024
+    _prev_net = net_now
+    _prev_net_time = now
+
+    # Per-process CPU + RSS for the radio stack (match by process name only)
+    procs = []
+    for proc in psutil.process_iter(["pid", "name", "cpu_percent", "memory_info"]):
+        try:
+            name = proc.info["name"] or ""
+            if any(name == p for p in _RADIO_PROCS):
+                procs.append({
+                    "pid":    proc.pid,
+                    "name":   name,
+                    "cpu":    proc.info["cpu_percent"],
+                    "rss_mb": round(proc.info["memory_info"].rss / 1024 / 1024, 1),
+                })
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+
+    return {
+        "ts":           ts,
+        "cpu_pct":      round(cpu_pct, 1),
+        "ram_pct":      round(mem.percent, 1),
+        "ram_used_mb":  mem.used // (1024 * 1024),
+        "bw_up_kbps":   round(bw_up_kbps, 1),
+        "bw_down_kbps": round(bw_down_kbps, 1),
+        "procs":        procs,
+    }
+
+
+def _append_sample(sample: dict) -> None:
+    """Append sample to the rolling JSONL log, trimming to _MAX_ENTRIES."""
+    log_path = RESOURCES_LOG
+    lines: list[str] = []
+    if log_path.exists():
+        lines = log_path.read_text().splitlines()
+
+    lines.append(json.dumps(sample))
+    # Keep only the newest _MAX_ENTRIES lines
+    if len(lines) > _MAX_ENTRIES:
+        lines = lines[-_MAX_ENTRIES:]
+
+    log_path.write_text("\n".join(lines) + "\n")
+
+
+def _monitor_loop() -> None:
+    """Background thread: warm up net counter, then poll every _POLL_INTERVAL_S."""
+    # Prime the net baseline without recording (first delta would be lifetime totals)
+    global _prev_net, _prev_net_time
+    _prev_net = psutil.net_io_counters(pernic=True).get(_NET_IFACE)
+    _prev_net_time = time.monotonic()
+    time.sleep(5)  # brief warm-up so cpu_percent has a reference
+
+    while True:
+        try:
+            sample = _sample_resources()
+            _append_sample(sample)
+        except Exception:
+            logger.exception("Resource monitor sample failed")
+        time.sleep(_POLL_INTERVAL_S)
+
+
+def _start_monitor() -> None:
+    t = threading.Thread(target=_monitor_loop, daemon=True, name="resource-monitor")
+    t.start()
+    logger.info("Resource monitor started (interval=%ds, max=%d entries)", _POLL_INTERVAL_S, _MAX_ENTRIES)
+
+
+_start_monitor()
 
 
 # --- Database ---
@@ -553,6 +660,34 @@ async def cam_url():
         return JSONResponse(candidates[0])
 
     raise HTTPException(503, "No webcam data available")
+
+
+@app.get("/api/resources")
+async def get_resources(hours: int = 72):
+    """Return resource samples from the rolling log.
+
+    Query param:
+      hours — how many hours of history to return (default 72 = 3 days, max 72)
+    """
+    hours = min(max(hours, 1), 72)
+    max_points = hours * 6  # 6 samples per hour at 10-min intervals
+
+    if not RESOURCES_LOG.exists():
+        return {"samples": [], "poll_interval_s": _POLL_INTERVAL_S}
+
+    lines = RESOURCES_LOG.read_text().splitlines()
+    recent = lines[-max_points:] if len(lines) > max_points else lines
+
+    samples = []
+    for line in recent:
+        line = line.strip()
+        if line:
+            try:
+                samples.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass
+
+    return {"samples": samples, "poll_interval_s": _POLL_INTERVAL_S}
 
 
 @app.delete("/api/tracks/{track_id}")
