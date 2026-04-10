@@ -31,14 +31,13 @@
       border: 1px solid #1a1a1a;
     }
 
-    /* iframe player (Windy live video) */
     .cam-wrap iframe {
       width: 100%;
       height: 100%;
       border: none;
       display: block;
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.6s ease;
     }
     .cam-wrap iframe.loaded { opacity: 1; }
 
@@ -66,7 +65,7 @@
       text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     }
 
     /* rotation countdown */
@@ -176,13 +175,46 @@
   <div class="footer">live</div>
 
 <script>
-  const camFrame   = document.getElementById('camFrame');
-  const camStill   = document.getElementById('camStill');
-  const camWrap    = document.getElementById('camWrap');
+  // -----------------------------------------------------------------------
+  // Curated 24/7 live city webcam streams on YouTube.
+  // Video IDs are stable for continuous 24/7 live streams — they rarely change.
+  // If a stream goes offline, the iframe shows YouTube's "offline" UI and
+  // rotates to the next cam after CAM_ROTATE_MS milliseconds.
+  // -----------------------------------------------------------------------
+  const LIVE_CAMS = [
+    { name: 'Times Square',          country: 'US', yt: 'rnXIjl_Rzy4' }, // EarthCam 4K
+    { name: 'Shibuya Scramble',      country: 'JP', yt: 'dfVK7ld38Ys' }, // Fixed crossing cam
+    { name: 'Sydney Harbour',        country: 'AU', yt: '5uZa3-RMFos' }, // Opera House 4K
+    { name: 'Venice Beach',          country: 'US', yt: 'EO_1LWqsCNE' }, // Los Angeles
+    { name: 'Abbey Road',            country: 'GB', yt: 'M3EYAY2MftI' }, // EarthCam London
+    { name: 'Shinjuku Kabukicho',    country: 'JP', yt: 'DjdUEyjx8GM' }, // Tokyo Shinjuku
+    { name: 'Dublin',                country: 'IE', yt: '3nyPER2kzqk' }, // EarthCam
+    { name: 'Auckland Harbour',      country: 'NZ', yt: 'BQR800Gu28g' }, // 4K Skyline
+    { name: 'Koh Samui Beach',       country: 'TH', yt: 'bbBGNNPu0rg' }, // Thailand 4K
+    { name: 'Rome / Vatican',        country: 'IT', yt: 'VzPbcndoD40' }, // Prati & St. Peter's
+    { name: 'San Francisco Bay',     country: 'US', yt: 'CXYr04BWvmc' }, // Bay Bridge 24/7
+    { name: 'Kabukicho II',          country: 'JP', yt: 'gFRtAAmiFbE' }, // Tokyo nightlife
+    { name: 'NYC Live',              country: 'US', yt: 'VGnFLdQW39A' }, // Streets & skyline
+  ];
+
+  // Shuffle so each page load starts at a different cam
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+  const cams = shuffle([...LIVE_CAMS]);
+  let camIdx = 0;
+
+  const camFrame    = document.getElementById('camFrame');
+  const camStill    = document.getElementById('camStill');
+  const camWrap     = document.getElementById('camWrap');
   const camLocation = document.getElementById('camLocation');
-  const camTimer   = document.getElementById('camTimer');
-  const camLabel   = document.getElementById('camLabel');
-  const trackName  = document.getElementById('trackName');
+  const camTimer    = document.getElementById('camTimer');
+  const camLabel    = document.getElementById('camLabel');
+  const trackName   = document.getElementById('trackName');
 
   // How long to show each webcam before rotating (ms)
   const CAM_ROTATE_MS = 5 * 60_000; // 5 minutes
@@ -205,66 +237,24 @@
     } catch (_) {}
   }
 
-  // --- Webcam loading ---
-  function showError() {
-    camWrap.classList.add('error');
-    camFrame.classList.remove('loaded');
-    camStill.classList.remove('loaded');
-    camLabel.textContent = '';
-  }
+  // --- Load a specific cam by index ---
+  function loadCam(idx) {
+    const cam = cams[idx % cams.length];
+    const ytUrl = `https://www.youtube.com/embed/${cam.yt}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&playsinline=1`;
 
-  function loadIframe(url, location, country) {
     camWrap.classList.remove('error');
     camStill.classList.remove('loaded');
     camFrame.classList.remove('loaded');
 
-    camFrame.onload = () => { camFrame.classList.add('loaded'); };
-    camFrame.onerror = () => {
-      // Fall back to still
-      camFrame.classList.remove('loaded');
-    };
-    camFrame.src = url;
+    // Brief delay so the fade-out completes before src changes
+    setTimeout(() => {
+      camFrame.onload = () => camFrame.classList.add('loaded');
+      camFrame.src = ytUrl;
 
-    const loc = [location, country].filter(Boolean).join(', ');
-    camLocation.textContent = loc;
-    camLabel.textContent = loc ? loc.toUpperCase() : '';
-  }
-
-  function loadStill(url, location, country) {
-    const next = new Image();
-    next.onload = () => {
-      camStill.src = next.src;
-      camStill.classList.add('loaded');
-      camWrap.classList.remove('error');
-    };
-    next.onerror = showError;
-    next.src = url + '?t=' + Date.now();
-
-    const loc = [location, country].filter(Boolean).join(', ');
-    camLocation.textContent = loc;
-    camLabel.textContent = loc ? loc.toUpperCase() : '';
-  }
-
-  async function loadCam() {
-    try {
-      const resp = await fetch('/cam-url');
-      if (!resp.ok) { showError(); return; }
-      const data = await resp.json();
-
-      if (data.player_embed) {
-        loadIframe(data.player_embed, data.location, data.country);
-        // Keep still hidden when we have iframe
-        camStill.classList.remove('loaded');
-      } else if (data.url) {
-        camFrame.src = '';
-        camFrame.classList.remove('loaded');
-        loadStill(data.url, data.location, data.country);
-      } else {
-        showError();
-      }
-    } catch (_) {
-      showError();
-    }
+      const loc = [cam.name, cam.country].filter(Boolean).join(', ');
+      camLocation.textContent = loc;
+      camLabel.textContent = loc.toUpperCase();
+    }, 300);
   }
 
   // --- Rotation countdown ---
@@ -282,32 +272,21 @@
   function scheduleCamRotation() {
     clearTimeout(rotateTimer);
     startCountdown();
-    rotateTimer = setTimeout(async () => {
-      camFrame.src = '';
+    rotateTimer = setTimeout(() => {
       camFrame.classList.remove('loaded');
-      camStill.classList.remove('loaded');
-      await loadCam();
+      camIdx = (camIdx + 1) % cams.length;
+      loadCam(camIdx);
       scheduleCamRotation();
     }, CAM_ROTATE_MS);
   }
 
   // --- Bootstrap ---
-  (async () => {
-    await loadCam();
-    scheduleCamRotation();
-    refreshTrack();
-  })();
+  loadCam(camIdx);
+  scheduleCamRotation();
+  refreshTrack();
 
   // Refresh track metadata every 15s
   setInterval(refreshTrack, 15_000);
-
-  // Refresh still image every 30s (only matters for cams without live video)
-  setInterval(() => {
-    if (camStill.src && camStill.classList.contains('loaded')) {
-      const base = camStill.src.split('?')[0];
-      loadStill(base, camLocation.textContent, '');
-    }
-  }, 30_000);
 </script>
 </body>
 </html>
