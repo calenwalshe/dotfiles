@@ -1,0 +1,27 @@
+{
+  "slug": "self-hosted-radio",
+  "mode": "execute",
+  "approval_status": "approved",
+  "active_contract": "docs/cortex/contracts/self-hosted-radio/contract-001.md",
+  "artifacts": [
+    "docs/cortex/clarify/self-hosted-radio/20260410T120000Z-clarify-brief.md",
+    "docs/cortex/research/self-hosted-radio/concept-20260410T123000Z.md",
+    "docs/cortex/specs/self-hosted-radio/spec.md",
+    "docs/cortex/specs/self-hosted-radio/project-context.md",
+    "docs/cortex/specs/self-hosted-radio/gsd-handoff.md",
+    "docs/cortex/contracts/self-hosted-radio/contract-001.md"
+  ],
+  "gates": {
+    "clarify_complete": true,
+    "research_complete": true,
+    "spec_complete": true,
+    "pr_opened": false,
+    "pr_merged": false
+  },
+  "github": {
+    "pr_number": null,
+    "pr_url": null,
+    "issue_number": null,
+    "branch": null
+  }
+}
