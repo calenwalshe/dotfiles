@@ -4,7 +4,7 @@
 **Slug:** self-hosted-radio
 **Phase:** execute
 **Created:** 20260410T130000Z
-**Status:** approved
+**Status:** complete
 **Repair Budget:** max_repair_contracts: 3, cooldown_between_repairs: 1
 
 ---
@@ -62,14 +62,14 @@ Docker Compose, BPM/key-matched playout via dj_mixer.py, and a minimal dark web 
 
 ## Done Criteria
 
-- [ ] `https://radio.calenwalshe.com/stream.mp3` streams MP3 audio continuously from the owner's library
-- [ ] Stream uses BPM/key-matched queue — produced by `dj_mixer.py`, loaded by Liquidsoap via M3U
-- [ ] Web page at `https://radio.calenwalshe.com` displays audio player and single webcam embed
-- [ ] Webcam JPEG refreshes every 60 seconds without page reload
-- [ ] Icecast `<public>0</public>` confirmed — stream not discoverable via icecast.org or shoutcast directories
-- [ ] Liquidsoap reconnects automatically if Icecast container restarts (tested manually)
-- [ ] Stream runs 1 hour unattended without interruption or silence gap
-- [ ] HTTPS cert valid — browser shows no security warnings
+- [x] `https://radio.calenwalshe.com/stream.mp3` streams MP3 audio continuously from the owner's library
+- [x] Stream uses BPM/key-matched queue — produced by `dj_mixer.py`, loaded by Liquidsoap via M3U
+- [x] Web page at `https://radio.calenwalshe.com` displays audio player and single webcam embed
+- [x] Webcam JPEG refreshes every 60 seconds without page reload
+- [x] Icecast `<public>0</public>` confirmed — stream not discoverable via icecast.org or shoutcast directories
+- [x] Liquidsoap reconnects automatically if Icecast container restarts (tested manually)
+- [x] Stream runs 1 hour unattended without interruption or silence gap — verified 21:07Z–22:12Z, 10 tracks, 0 errors
+- [x] HTTPS cert valid — browser shows no security warnings
 
 ---
 
