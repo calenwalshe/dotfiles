@@ -9,7 +9,7 @@
 
 ## Writer Requirements
 
-- [ ] **PH-02**: Every Liquidsoap track change fires a durable play event to the database within 10 seconds
+- [x] **PH-02**: Every Liquidsoap track change fires a durable play event to the database within 10 seconds
 
 ## Ingest Requirements
 
@@ -25,14 +25,14 @@
 | Requirement | Phase | Status |
 |---|---|---|
 | **PH-01** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
-| **PH-02** | Phase 2: Writer Hook and Container Wire-up | Pending |
+| **PH-02** | Phase 2: Writer Hook and Container Wire-up | Complete |
 | **PH-03** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
 | **PH-04** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
 | **PH-05** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
 
 **Coverage:**
 - Database requirements: 1 total — 1 complete
-- Writer requirements: 1 total — 0 complete (Phase 2)
+- Writer requirements: 1 total — 1 complete
 - Ingest requirements: 1 total — 1 complete
 - API requirements: 2 total — 2 complete
 - Unmapped: 0
