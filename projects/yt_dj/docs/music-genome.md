@@ -26,7 +26,11 @@ graph TD
     CR[Classic Rock & Blues]
     AM[Ambient / Drift]
     AF[Afrobeat & African Electronic]
-    DH[Deep / Disco House]
+    NDC[Nu-Disco / Cosmic Disco]
+    LFH[Lo-fi House]
+    JSH[Jazzy / Soulful Deep House]
+    BAL[Balearic]
+    ACH[Afro-Cosmic / Spiritual House]
     UK[UK Funky & Broken Beat]
     IT[Industrial Techno]
     IDM[IDM / Experimental Electronic]
@@ -50,16 +54,23 @@ graph TD
     AM --- OH
     AM --- IDM
     B25 --- EE
-    B25 --- DH
+    B25 --- JSH
     CR --- GF
-    DH --- UK
-    DH --- IDM
-    UK --- DH
     IT --- MH
     IT --- IDM
     IDM --- AM
     IND --- IDM
     IND --- GF
+    NDC --- LFH
+    NDC --- BAL
+    JSH --- NDC
+    JSH --- LFH
+    JSH --- ACH
+    LFH --- UK
+    LFH --- IDM
+    BAL --- OH
+    BAL --- GF
+    ACH --- AF
 ```
 
 *Nodes in **bold** have library holdings. Grey nodes are mapped but unrepresented — extension targets.*
@@ -334,10 +345,13 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 - [library] Hermanos Gutiérrez — La Verdad
 - [library] Tommy Guerrero — organism
 - [library] YĪN YĪN — The Age Of Aquarius
+- [library] Hailu Mergia — Gum Gum *(Awesome Tapes From Africa — Ethiopian jazz/funk)*
+- [library] Shogun Orchestra — Cigars of the Pharoah *(global psych — Tintin-inspired)*
+- [library] Shogun Orchestra — River of Sanzu
+- [library] The Heliocentrics — The Uncertainty Principle *(London psych-jazz)*
 
 **Open slots:**
 - [ ] Mdou Moctar (Tuareg desert blues — bridge to Ethnic Electronic)
-- [ ] Hailu Mergia (Ethiopian jazz)
 - [ ] Mulatu Astatke (Ethio-jazz ancestor node)
 - [ ] Tinariwen (desert blues — North Africa)
 - [ ] Quantic (bridge to Latin Electronic)
@@ -361,6 +375,9 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 
 **Library holdings:**
 - [library] The Doors — People Are Strange
+- [library] Willie Mabon — I Don't Know [Chess Records, 1952] *(Chicago electric blues)*
+- [library] Otis Rush — My Love Will Never Die *(Chicago Blues, 1969)*
+- [library] Larry Dale — Down To The Bottom *(electric blues)*
 
 **Open slots:**
 - [ ] Jimi Hendrix (bridge node to Global Funk / Psych)
@@ -369,39 +386,165 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 
 ---
 
-### Deep / Disco House
+### Nu-Disco / Cosmic Disco
 
-**What it is:** House music rooted in the warmth of disco and soul. Lush chords, soulful vocals (often sampled), hypnotic groove. Sits between the dancefloor and the living room. Labels like Lobster Theremin and Wolf Music have defined a scrappier, lo-fi version of this; the deeper end bleeds into Larry Heard / Chicago territory.
+**What it is:** Disco that knows it's disco. Shimmering analog synths, Italo and Moroder influences, French touch and Norwegian school colliding. Euphoric, hedonistic, but with a formal intelligence — these producers revived the form without pastiche. Todd Terje, Lindstrom, Alan Braxe are the principals.
 
-**Sonic signature:** Warm chord stabs, soul vocal samples or live vocalists, 120–126 BPM, slightly compressed and dusty-sounding. Four-on-the-floor but looser than techno. More swing.
+**Sonic signature:** Four-on-the-floor with swing, warm Juno or Moog synths, prominent bass, melodic arpeggios, echo chambers. The BPM range spans disco's 110–128. Always uplifting. Often instrumental.
 
-**Geographic roots:** Chicago (origins), UK (Lobster Theremin revival), Amsterdam (Rush Hour, Clone), New York.
+**Geographic roots:** Norway (Oslo — Terje, Lindstrom, Prins Thomas), France (Paris — Alan Braxe, Cassius, Ed Banger orbit), Scandinavia.
 
-**Era:** 1980s origins → ongoing. Current Lobster Theremin / Mister Saturday Night wave: 2010 → present.
+**Era:** 1978–1983 (classic Italo/disco roots) → 2000s revival (Diskjokke, Lindstrom) → present.
 
-**Key labels:** Lobster Theremin, Wolf Music, Permanent Vacation, Rush Hour, Mister Saturday Night
+**Key labels:** Eskimo Recordings, Running Back, Italians Do It Better, Permanent Vacation
 
 **Edges:**
-- ↔ **Bar 25 / Berlin Deep** (emotional and sonic overlap)
-- ↔ **UK Funky & Broken Beat** (UK label overlap — Lobster Theremin bridges both)
-- ↔ **IDM / Experimental Electronic** (weirder Lobster releases blur the line)
+- ↔ **Lo-fi House** (both house sub-genera, different production aesthetics)
+- ↔ **Balearic** (cosmic disco and balearic share sunset euphoria)
+- ↔ **Jazzy / Soulful Deep House** (shared disco ancestor, different emotional register)
+
+**Library holdings:**
+- [library] Todd Terje — Inspector Norse
+- [library] Lindstrom — I Feel Space
+- [library] Alan Braxe & Fred Falke — Intro
+- [library] Dolly Parton — Jolene (Todd Terje Remix) *(Norwegian edit, proto-disco)*
+- [library] The End — Discoshit *(nu-disco energy)*
+- [library] Demuja — Turn Me On
+- [library] Munk — Live Fast! Die Old! (Maral Salmassi & Zero Cash Remix)
+
+**Open slots:**
+- [ ] Prins Thomas — Prins Thomas (full LP)
+- [ ] Soulwax — Any Minute Now
+- [ ] Lindstrom & Christabelle — Real Life Is No Cool
+
+---
+
+### Lo-fi House
+
+**What it is:** A reaction against the clinical polish of commercial EDM — raw 4/4 with tape hiss, dusty samples, deliberately imperfect mixing, and anonymous SoundCloud releasing. The Lobster Theremin label (London, 2012) named the aesthetic before it had a name. Palms Trax, DJ Seinfeld, Pacific Coliseum, Tessio.
+
+**Sonic signature:** Lo-pass filters that sound broken, drum machines with swing, pitched-down vocal samples, 120–128 BPM. Reverb used as concealment. The recording sounds like it happened in a bedroom at 3am.
+
+**Geographic roots:** London (Lobster Theremin, Hessle Audio-adjacent), Berlin, internet-native (SoundCloud anonymous releases), Gothenburg (DJ Seinfeld).
+
+**Era:** 2014 → present. Peak SoundCloud wave 2016–2019.
+
+**Key labels:** Lobster Theremin, 1080p, Emotion Recordings, Creme Organization
+
+**Edges:**
+- ↔ **Nu-Disco / Cosmic Disco** (cousins — different polish level, same 4/4 lineage)
+- ↔ **Jazzy / Soulful Deep House** (both house sub-genera)
+- ↔ **UK Funky & Broken Beat** (UK scene overlap — Lobster bridges both)
+- ↔ **IDM / Experimental Electronic** (weirder Lobster releases blur this line)
 
 **Library holdings:**
 - [library] Roza Roza — ----- [Lobster Theremin]
 - [library] HLLW — Theme For Abergail [Lobster Theremin]
 - [library] Supreems — Us Together [Lobster Theremin]
-- [library] Dolly Parton — Jolene (Todd Terje Remix) *(edit: Norwegian edit, proto-disco)*
-- [library] DJ Seinfeld — U *(lo-fi house)*
-- [library] Pacific Coliseum — Ocean City *(lo-fi house)*
-- [library] Detroit Swindle — The Wrap Around *(Dutch deep house)*
+- [library] DJ Seinfeld — U
+- [library] Pacific Coliseum — Ocean City
+- [library] Tom Vernon — Amber Fade
+- [library] Davis — Perle [PLAYRJC046]
+- [library] Davis — Plenitude
+- [library] Mikhu — Sorry [SNG001]
+- [library] Vinyl Speed Adjust — Retro
+- [library] Marcman — Drept
+
+**Open slots:**
+- [ ] Palms Trax [Lobster Theremin]
+- [ ] Tessio
+- [ ] Ross From Friends (deeper sets)
+- [ ] DJ Stingray (lo-fi strand)
+
+---
+
+### Jazzy / Soulful Deep House
+
+**What it is:** The original Chicago and New Jersey lineage. Rhodes electric piano, saxophones, jazz harmony over a steady four-on-the-floor pulse. Warm, spiritual, unhurried. Larry Heard's "Can You Feel It" (1986) is the Ur-text. Kerri Chandler refined it; Glenn Underground spiritualised it. Strictly for the connoisseurs, as GU himself put it on the label.
+
+**Sonic signature:** Warm chord stabs from a real piano or Rhodes, saxophone improvisation, brushed snares, jazz-inflected basslines. 118–125 BPM. Soul and church music ancestry audible throughout.
+
+**Geographic roots:** Chicago (Larry Heard, Glenn Underground, Ron Trent), New Jersey (Kerri Chandler), NYC (Frankie Knuckles orbit).
+
+**Era:** 1983 (Ron Hardy, Larry Heard at Music Box) → present. Never died.
+
+**Key labels:** King Street Sounds, Nite Grooves, Balance, Prescription (Ron Hardy's label)
+
+**Edges:**
+- ↔ **Nu-Disco / Cosmic Disco** (shared disco ancestor, diverging emotional register)
+- ↔ **Lo-fi House** (house sub-genera, adjacent in club context)
+- ↔ **Afro-Cosmic / Spiritual House** (Chicago spiritual house lineage → direct child)
+- ↔ **Bar 25 / Berlin Deep** (Berlin's deep emotional space draws from this)
+
+**Library holdings:**
+- [library] Kerri Chandler — Bar A Thym (Extended Mix) [King Street Sounds]
+- [library] Glenn Underground — Lush (Untitled) *("Produced with perfection — strictly for the connoisseurs")*
+- [library] Detroit Swindle — The Wrap Around *(Dutch deep house — jazzy lineage)*
 - [library] Moodcut — Stuck In Socks *(jazzy deep house)*
+- [library] Steve Bug & Langenberg — A Touch of Detroit *(Detroit reference, jazzy groove)*
 
 **Open slots:**
 - [ ] Larry Heard — Can You Feel It (ancestor node)
-- [ ] Floating Points (deeper end — bridge to IDM)
-- [ ] Palms Trax [Lobster Theremin]
-- [ ] Ross From Friends (deeper tracks — bridge to UK Funky)
-- [ ] Hunee
+- [ ] Ron Trent — Altered States
+- [ ] Chez Damier & Ron Trent — Prescription EP
+- [ ] Frankie Knuckles
+- [ ] Marshall Jefferson — Move Your Body
+
+---
+
+### Balearic
+
+**What it is:** Not a genre but a DJ philosophy: genre-fluid, sunset-paced, melancholic, wide-open. Born in Ibiza in the 1980s when DJ Alfredo played anything at the Amnesia — reggae, new wave, Italian pop, electronic. DJ Harvey and Daniele Baldelli are its high priests. Music For Dreams (Danish label) is its current publishing house.
+
+**Sonic signature:** No fixed BPM or format. Can be 85 BPM reggae or 128 BPM trance. The unifying quality is a certain coastal melancholy — minor keys that feel warm rather than sad. Space and reverb. Transitions that blur genre boundaries.
+
+**Geographic roots:** Ibiza (Café del Mar, Amnesia), Denmark (Music For Dreams), Italy (Daniele Baldelli — Cosmic era Varese).
+
+**Era:** 1978 (Alfredo, Amnesia) → ongoing. Seasonal — always peaks in summer.
+
+**Key labels:** Music For Dreams, Classic Music Company (DJ Harvey), Bordello A Parigi
+
+**Edges:**
+- ↔ **Nu-Disco / Cosmic Disco** (cosmic disco and balearic share sunset euphoria)
+- ↔ **Organic / Downtempo House** (sunset pace, wide-open feel)
+- ↔ **Global Funk & Psych** (genre-fluid Balearic sets draw from world funk)
+
+**Library holdings:**
+- [library] Derek Carr — Solar Storm [WSS004] *(balearic deep house)*
+- [library] Bot'Ox — Blue Steel *(French, balearic-disco crossover)*
+
+**Open slots:**
+- [ ] DJ Harvey — The Sound of Mercury Rising (DJ mix)
+- [ ] Daniele Baldelli
+- [ ] Music For Dreams compilations (Café Del Mar-adjacent)
+- [ ] Dr. Packer (modern Balearic edit culture)
+
+---
+
+### Afro-Cosmic / Spiritual House
+
+**What it is:** Deep house as cosmic philosophy. Chicago school extended into Afrocentric spiritual territory — polyrhythmic, meditative, resistant to commercial club logic. Hieroglyphic Being (MAAT label, Chicago), Theo Parrish (Sound Signature), Osunlade (Yoruba Records). Where deep house meets Afrobeat meets free jazz. Where Glenn Underground's "strictly for the connoisseurs" becomes a cosmological statement.
+
+**Sonic signature:** Irregular or extended percussion patterns, African drum polyrhythm, spiritual vocal chants or samples, jazz solos, tempo variations within a single track. Dancefloor-optional.
+
+**Geographic roots:** Chicago (Hieroglyphic Being, Glenn Underground), Detroit (Theo Parrish), New York (Osunlade, Yoruba Records).
+
+**Era:** 1990s → present. Perpetually underground.
+
+**Key labels:** MAAT Records, Sound Signature, Yoruba Records, Rush Hour
+
+**Edges:**
+- ↔ **Jazzy / Soulful Deep House** (Chicago lineage — direct parent)
+- ↔ **Afrobeat & African Electronic** (African rhythmic and spiritual roots)
+
+**Library holdings:**
+- [library] Glenn Underground — Man On Fire (Remastered) *(deep cosmic groove)*
+
+**Open slots:**
+- [ ] Hieroglyphic Being — The Acid Documents
+- [ ] Theo Parrish — Falling Up
+- [ ] Osunlade — Envision (Yoruba Records)
+- [ ] Larry Heard — Sceneries Not Songs (cosmic cuts)
 
 ---
 
@@ -575,7 +718,7 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 - ↔ **Organic / Downtempo House** (Afro house tempo overlap)
 
 **Library holdings:**
-- [ ] *(no holdings yet — extension target)*
+- [library] K. Frimpong & Super Complex Sounds — Ahyewa (Hide & Smile edit) *(Ghanaian highlife-funk, 1976)*
 
 **Open slots:**
 - [ ] Fela Kuti (ancestor node)
@@ -648,4 +791,4 @@ Tracks that need classification (filename-only or unclear):
 ---
 
 *Last updated: 2026-04-12*
-*Library snapshot: 98 tracks across 12 active genera + 2 unmapped (Ambient, Afrobeat)*
+*Library snapshot: 143 tracks. Deep/Disco House split into 5 sub-genera: Nu-Disco, Lo-fi House, Jazzy Deep House, Balearic, Afro-Cosmic. 20 active genera total.*
