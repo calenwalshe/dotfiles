@@ -5,7 +5,7 @@
 
 ## Database Requirements
 
-- [ ] **PH-01**: `music/library.db` contains `library_tracks` and `plays` tables with WAL mode enabled
+- [x] **PH-01**: `music/library.db` contains `library_tracks` and `plays` tables with WAL mode enabled
 
 ## Writer Requirements
 
@@ -13,26 +13,26 @@
 
 ## Ingest Requirements
 
-- [ ] **PH-03**: `analyze_library.py` populates `library_tracks` with one row per `music/clips/*.mp3` file
+- [x] **PH-03**: `analyze_library.py` populates `library_tracks` with one row per `music/clips/*.mp3` file
 
 ## API Requirements
 
-- [ ] **PH-04**: Four FastAPI read endpoints expose play history data at `/api/play-history/*`
-- [ ] **PH-05**: A stdlib-only `src/play_history.py` module provides direct-import access for future Python consumers
+- [x] **PH-04**: Four FastAPI read endpoints expose play history data at `/api/play-history/*`
+- [x] **PH-05**: A stdlib-only `src/play_history.py` module provides direct-import access for future Python consumers
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |---|---|---|
-| **PH-01** | Phase 1: Schema, Read Layer, and Library Ingest | Pending |
+| **PH-01** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
 | **PH-02** | Phase 2: Writer Hook and Container Wire-up | Pending |
-| **PH-03** | Phase 1: Schema, Read Layer, and Library Ingest | Pending |
-| **PH-04** | Phase 1: Schema, Read Layer, and Library Ingest | Pending |
-| **PH-05** | Phase 1: Schema, Read Layer, and Library Ingest | Pending |
+| **PH-03** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
+| **PH-04** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
+| **PH-05** | Phase 1: Schema, Read Layer, and Library Ingest | Complete |
 
 **Coverage:**
-- Database requirements: 1 total — mapped
-- Writer requirements: 1 total — mapped
-- Ingest requirements: 1 total — mapped
-- API requirements: 2 total — mapped
+- Database requirements: 1 total — 1 complete
+- Writer requirements: 1 total — 0 complete (Phase 2)
+- Ingest requirements: 1 total — 1 complete
+- API requirements: 2 total — 2 complete
 - Unmapped: 0

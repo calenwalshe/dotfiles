@@ -26,7 +26,7 @@ Build a durable play-history data foundation layer for the self-hosted radio str
 
 **Research**: Unlikely — all implementation decisions resolved in Cortex research dossier
 
-**Plans**: 0 plans
+**Plans**: 2 plans (complete)
 
 ---
 
@@ -52,5 +52,5 @@ Build a durable play-history data foundation layer for the self-hosted radio str
 
 | Phase | Plans Complete | Status | Completed |
 |---|---|---|---|
-| Phase 1: Schema, Read Layer, and Library Ingest | 0/0 | Not started | - |
+| Phase 1: Schema, Read Layer, and Library Ingest | 2/2 | Complete | 2026-04-12 |
 | Phase 2: Writer Hook and Container Wire-up | 0/0 | Not started | - |
