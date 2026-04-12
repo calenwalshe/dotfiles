@@ -171,6 +171,46 @@ def get_db() -> sqlite3.Connection:
         )
     """)
     conn.commit()
+
+    # WAL mode — idempotent, no-op if already set
+    conn.execute("PRAGMA journal_mode=WAL")
+
+    # Library tracks index — one row per music file in clips/library dirs
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS library_tracks (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            file_path     TEXT    NOT NULL UNIQUE,
+            filename      TEXT    NOT NULL,
+            title         TEXT,
+            artist        TEXT,
+            bpm           REAL,
+            camelot       TEXT,
+            duration_s    REAL,
+            first_seen_at TEXT    NOT NULL,
+            removed_at    TEXT
+        )
+    """)
+
+    # Append-only play log
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS plays (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            library_track_id INTEGER,
+            file_path        TEXT    NOT NULL,
+            filename         TEXT    NOT NULL,
+            played_at        TEXT    NOT NULL,
+            source           TEXT    DEFAULT 'liquidsoap'
+        )
+    """)
+
+    # Indexes
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_library_tracks_file_path ON library_tracks(file_path)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_library_tracks_removed_at ON library_tracks(removed_at)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_plays_library_track_id ON plays(library_track_id, played_at DESC)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_plays_played_at ON plays(played_at DESC)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_plays_file_path ON plays(file_path)")
+
+    conn.commit()
     return conn
 
 
