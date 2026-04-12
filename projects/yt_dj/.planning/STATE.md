@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: play-history
-status: in_progress
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-04-12T05:08:00Z"
-last_activity: 2026-04-12 — Executed plan 02-01 (log_play.py writer + liquidsoap volume mounts)
+status: complete
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-04-12T05:12:00Z"
+last_activity: 2026-04-12 — Executed plan 02-02 (radio.liq on_track hook + liquidsoap restart)
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -26,12 +26,12 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 
 ## Current Position
 
-Phase: 2 — Liquidsoap Integration (In Progress)
-Plan: 1 of 2 complete (02-01 done, 02-02 pending)
-Status: In progress
-Last activity: 2026-04-12 — Completed 02-01-PLAN.md (log_play.py + docker-compose mounts)
+Phase: 2 — Liquidsoap Integration (COMPLETE)
+Plan: 2 of 2 complete (02-01 done, 02-02 done)
+Status: Milestone complete
+Last activity: 2026-04-12 — Completed 02-02-PLAN.md (radio.liq on_track hook + liquidsoap restart)
 
-Progress: [████████████████████████░░░░░░░░] 3/4 plans total; 1 of 2 in phase 2 done
+Progress: [████████████████████████████████] 4/4 plans total; milestone v1.0 complete
 
 ## Performance Metrics
 
@@ -77,6 +77,12 @@ All implementation decisions resolved in Cortex research dossier. Key decisions:
 - No liquidsoap restart in 02-01 — deferred to 02-02 after radio.liq hook is added
 - Silent-fail pattern: outer try/except in `__main__` catches all exceptions; `sys.exit(0)` always last line
 
+**From 02-02 execution:**
+- SQLite WAL requires directory-level Docker mount (not file-level): WAL creates -wal/-shm sidecar files in same directory; file-level mount places them in root-owned synthetic dir, blocking writes
+- Fix: mount full `music/` dir `:rw` instead of `library.db` file — host music/ is uid 1001 chmod 777
+- Liquidsoap container was standalone (not in compose project) — stopped and re-created with docker run matching compose spec plus corrected mount
+- source.on_track(synchronous=false) + thread.run + ignore(system()) is the correct fire-and-forget pattern for Liquidsoap shell-outs
+
 ### Pending Todos
 
 None.
@@ -87,7 +93,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-12T05:08:00Z
-Stopped at: Completed 02-01-PLAN.md (log_play.py writer + docker-compose mounts)
+Last session: 2026-04-12T05:12:00Z
+Stopped at: Completed 02-02-PLAN.md (radio.liq hook + liquidsoap restart + plays table verified)
 Resume file: None
-Next: Plan 02-02 — add source.on_track hook to radio.liq and restart liquidsoap
+Next: Milestone v1.0 complete. No pending plans.
