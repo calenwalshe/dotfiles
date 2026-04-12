@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: play-history
-status: phase_complete
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-04-12T04:57:32Z"
-last_activity: 2026-04-12 — Executed plan 01-02 (play_history.py read module + 4 FastAPI endpoints)
+status: in_progress
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-04-12T05:08:00Z"
+last_activity: 2026-04-12 — Executed plan 02-01 (log_play.py writer + liquidsoap volume mounts)
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 100
+  total_plans: 4
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -22,29 +22,30 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 
 **Core value:** Every track change on the live radio stream is automatically logged to a durable append-only SQLite table, every track file in `music/clips/` has a row with `first_seen_at` and derivable stats, and a read API exists that future slugs (track-freshness rotation) can consume directly.
 
-**Current focus:** Phase 1 complete — Schema, Read Layer, and Library Ingest all shipped.
+**Current focus:** Phase 2 in progress — log_play.py writer shipped; radio.liq on_track hook pending (Plan 02-02).
 
 ## Current Position
 
-Phase: 1 — Schema, Read Layer, and Library Ingest (COMPLETE)
-Plan: 2 of 2 complete (both 01-01 and 01-02 done)
-Status: Phase complete
-Last activity: 2026-04-12 — Completed 01-02-PLAN.md (play history read API)
+Phase: 2 — Liquidsoap Integration (In Progress)
+Plan: 1 of 2 complete (02-01 done, 02-02 pending)
+Status: In progress
+Last activity: 2026-04-12 — Completed 02-01-PLAN.md (log_play.py + docker-compose mounts)
 
-Progress: [████████████████████░░░░░░░░░░░░] 2/2 plans in phase 1; phase 1 of 2 complete
+Progress: [████████████████████████░░░░░░░░] 3/4 plans total; 1 of 2 in phase 2 done
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~2 min
-- Total execution time: ~4 min
+- Total plans completed: 3
+- Average duration: ~3 min
+- Total execution time: ~12 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |---|---|---|---|
-| 01-play-history | 2 | ~4 min | ~2 min |
+| 01-play-history | 2 | ~8 min | ~4 min |
+| 02-play-history | 1 (of 2) | ~4 min | ~4 min |
 
 ## Accumulated Context
 
@@ -70,6 +71,12 @@ All implementation decisions resolved in Cortex research dossier. Key decisions:
 - `tracks_by_days_since_play` uses `NULLS FIRST` — never-played tracks sort to top of freshness list
 - Read module (play_history.py) is stdlib-only — safe to import from dj_mixer, log_play.py, or any script
 
+**From 02-01 execution:**
+- `library_track_id` resolved at write time via `file_path` lookup — NULL accepted if track not indexed
+- `library.db` mounted `:rw`, `log_play.py` mounted `:ro` in liquidsoap service (same-path-on-both-sides pattern)
+- No liquidsoap restart in 02-01 — deferred to 02-02 after radio.liq hook is added
+- Silent-fail pattern: outer try/except in `__main__` catches all exceptions; `sys.exit(0)` always last line
+
 ### Pending Todos
 
 None.
@@ -80,7 +87,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-12T04:57:32Z
-Stopped at: Completed 01-02-PLAN.md (play history read API + 4 FastAPI endpoints)
+Last session: 2026-04-12T05:08:00Z
+Stopped at: Completed 02-01-PLAN.md (log_play.py writer + docker-compose mounts)
 Resume file: None
-Next: Phase 1 complete. Next step is log_play.py writer (Liquidsoap integration) — not yet planned in a formal phase.
+Next: Plan 02-02 — add source.on_track hook to radio.liq and restart liquidsoap
