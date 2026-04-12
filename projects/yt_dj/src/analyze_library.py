@@ -2,7 +2,9 @@
 import json
 import glob
 import logging
+import sqlite3
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import essentia.standard as es
@@ -12,7 +14,9 @@ log = logging.getLogger(__name__)
 
 PROJECT = Path(__file__).parent.parent
 CLIPS_DIR = PROJECT / "music" / "clips"
+LIBRARY_DIR = PROJECT / "music" / "library"
 OUTPUT = PROJECT / "config" / "track_metadata.json"
+DB_PATH = PROJECT / "music" / "library.db"
 
 # Camelot wheel mapping
 KEY_TO_CAMELOT = {
@@ -58,27 +62,76 @@ def analyze_track(filepath: str) -> dict:
     }
 
 
+def upsert_library_tracks(results: list) -> None:
+    """Upsert library_tracks table from analysis results. Soft-deletes removed files."""
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("PRAGMA journal_mode=WAL")
+    try:
+        for r in results:
+            conn.execute(
+                """
+                INSERT INTO library_tracks
+                    (file_path, filename, bpm, camelot, duration_s, first_seen_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(file_path) DO UPDATE SET
+                    filename   = excluded.filename,
+                    bpm        = excluded.bpm,
+                    camelot    = excluded.camelot,
+                    duration_s = excluded.duration_s,
+                    removed_at = NULL
+                """,
+                (r["file"], r["filename"], r.get("bpm"), r.get("camelot"), r.get("duration_s"), now),
+            )
+        # Soft-delete files no longer in the scan
+        current_paths = {r["file"] for r in results}
+        rows = conn.execute(
+            "SELECT file_path FROM library_tracks WHERE removed_at IS NULL"
+        ).fetchall()
+        for (fp,) in rows:
+            if fp not in current_paths:
+                conn.execute(
+                    "UPDATE library_tracks SET removed_at = ? WHERE file_path = ?",
+                    (now, fp),
+                )
+        conn.commit()
+        log.info(f"Upserted {len(results)} tracks into library_tracks")
+    finally:
+        conn.close()
+
+
 def main():
     tracks = sorted(glob.glob(str(CLIPS_DIR / "*.mp3")))
+    tracks += sorted(glob.glob(str(LIBRARY_DIR / "*.mp3")))
     if not tracks:
-        log.error(f"No tracks found in {CLIPS_DIR}")
+        log.error(f"No tracks found in {CLIPS_DIR} or {LIBRARY_DIR}")
         sys.exit(1)
 
-    log.info(f"Analyzing {len(tracks)} tracks...")
-    results = []
-    for i, t in enumerate(tracks):
+    # Load existing metadata to skip already-analyzed tracks
+    existing = {}
+    if OUTPUT.exists():
+        with open(OUTPUT) as f:
+            for entry in json.load(f):
+                existing[entry["file"]] = entry
+
+    new_tracks = [t for t in tracks if t not in existing]
+    log.info(f"Analyzing {len(new_tracks)} new tracks ({len(existing)} already cached)...")
+    results = list(existing.values())
+    for i, t in enumerate(new_tracks):
         try:
             info = analyze_track(t)
             results.append(info)
-            log.info(f"  [{i+1}/{len(tracks)}] {info['filename'][:50]} — {info['bpm']} BPM, {info['camelot']}, energy={info['energy']:.0f}")
+            log.info(f"  [{i+1}/{len(new_tracks)}] {info['filename'][:50]} — {info['bpm']} BPM, {info['camelot']}, energy={info['energy']:.0f}")
         except Exception as e:
-            log.error(f"  [{i+1}/{len(tracks)}] FAILED {Path(t).name}: {e}")
+            log.error(f"  [{i+1}/{len(new_tracks)}] FAILED {Path(t).name}: {e}")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT, "w") as f:
         json.dump(results, f, indent=2)
 
     log.info(f"Wrote {len(results)} tracks to {OUTPUT}")
+
+    upsert_library_tracks(results)
 
     # Summary stats
     bpms = [r["bpm"] for r in results]
