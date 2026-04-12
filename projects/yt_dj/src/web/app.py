@@ -20,6 +20,7 @@ from typing import Optional
 import httpx
 import psutil
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from src import play_history
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -741,3 +742,30 @@ async def delete_track(track_id: str):
     db.commit()
     db.close()
     return {"status": "deleted"}
+
+
+# ---------------------------------------------------------------------------
+# Play history read API
+# ---------------------------------------------------------------------------
+
+@app.get("/api/play-history/recent")
+def api_play_history_recent(limit: int = 100):
+    return play_history.recent_plays(limit=limit)
+
+
+@app.get("/api/play-history/never-played")
+def api_play_history_never_played():
+    return play_history.tracks_never_played()
+
+
+@app.get("/api/play-history/freshness")
+def api_play_history_freshness(max_days: int = 7):
+    return play_history.tracks_by_days_since_play(max_days=max_days)
+
+
+@app.get("/api/play-history/track")
+def api_play_history_track(file_path: str):
+    result = play_history.track_stats(file_path=file_path)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Track not found in library")
+    return result
