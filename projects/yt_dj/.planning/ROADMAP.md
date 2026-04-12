@@ -1,55 +1,56 @@
-# Roadmap: Self-Hosted Radio Station
+# Roadmap: Play History — Data Foundation Layer
 
 ## Overview
 
-Deploy a self-hosted internet radio station on the agent-stack box: Icecast2 + Liquidsoap in
-Docker Compose, BPM/key-matched MP3 playout via dj_mixer.py, and a minimal dark web frontend
-at `https://radio.calenwalshe.com` with HTML5 audio player and rotating webcam embed.
+Build a durable play-history data foundation layer for the self-hosted radio stream — two new SQLite tables in `music/library.db`, a fire-and-forget Liquidsoap play-event writer, a library-track ingest extension to `analyze_library.py`, a stdlib-only Python read module, and four FastAPI read endpoints — so that every track change on the live radio stream is durably logged and queryable by future slugs (first consumer: track-freshness rotation logic).
 
 ## Phases
 
-### Phase 1: Services
+### Phase 1: Schema, Read Layer, and Library Ingest
 
-**Goal**: Icecast2 + Liquidsoap running in Docker Compose on the agent-stack network, streaming
-BPM/key-matched MP3s via dynamic M3U playlist written by `dj_mixer.py`.
+**Goal**: Create the SQLite schema (both tables + WAL mode), write the stdlib-only `play_history.py` read module, add 4 FastAPI endpoints, and extend `analyze_library.py` to populate `library_tracks`. After this phase, the schema exists, the read API is live (returning empty results), and running `analyze_library.py` fills the library index — all verifiable before any Liquidsoap changes.
+
 **Depends on**: Nothing
-**Requirements**: RADIO-01, RADIO-02
+
+**Requirements**: PH-01, PH-03, PH-04, PH-05
+
 **Success Criteria** (what must be TRUE):
-  1. `https://radio.calenwalshe.com/stream.mp3` streams MP3 audio continuously from the owner's library
-  2. Stream uses BPM/key-matched queue — produced by `dj_mixer.py`, loaded by Liquidsoap via M3U
-  3. Liquidsoap reconnects automatically if Icecast container restarts (tested manually)
-**Research**: Unlikely — architecture fully resolved in research dossier
+1. `music/library.db` contains both `library_tracks` and `plays` tables matching the schema in `docs/cortex/specs/play-history/spec.md` Section 4
+2. `PRAGMA journal_mode` on `library.db` returns `wal`
+3. After running `python3 src/analyze_library.py`, `SELECT COUNT(*) FROM library_tracks WHERE removed_at IS NULL` equals `ls music/clips/*.mp3 | wc -l`
+4. `GET /api/play-history/recent` returns HTTP 200 and a JSON array (empty is valid at t=0)
+5. `GET /api/play-history/never-played` returns HTTP 200 and a JSON array
+6. `GET /api/play-history/freshness?max_days=7` returns HTTP 200 and a JSON array
+7. `GET /api/play-history/track?file_path=<any_path_in_library_tracks>` returns HTTP 200 and a JSON object with `play_count`, `last_played_at`, `first_seen_at`
+8. No existing endpoint in `src/web/app.py` returns a different response after this slug ships (regression check)
+
+**Research**: Unlikely — all implementation decisions resolved in Cortex research dossier
+
 **Plans**: 0 plans
 
-### Phase 2: Routing & Frontend
+---
 
-**Goal**: Caddy reverse proxy block live for `radio.calenwalshe.com`, Windy cam proxy endpoint
-in `web/app.py`, and minimal dark `radio.html` frontend with audio player and webcam embed.
-**Depends on**: Phase 1: Services
-**Requirements**: RADIO-03, RADIO-04, RADIO-05
+### Phase 2: Writer Hook and Container Wire-up
+
+**Goal**: Write `src/log_play.py`, add the `source.on_track` hook to `radio.liq`, and update `docker-compose.yml` with the required volume mounts. After this phase, Liquidsoap automatically logs every track change to the `plays` table — the full data foundation is live.
+
+**Depends on**: Phase 1 (schema and `library_tracks` must exist before writer runs FK lookups)
+
+**Requirements**: PH-02
+
 **Success Criteria** (what must be TRUE):
-  1. Web page at `https://radio.calenwalshe.com` displays audio player and single webcam embed
-  2. Webcam JPEG refreshes every 60 seconds without page reload
-  3. HTTPS cert valid — browser shows no security warnings
-**Research**: Unlikely
+1. After the next Liquidsoap track change, a row appears in `plays` within 10 seconds of the change
+2. Stream audio continues playing without interruption if `src/log_play.py` exits with error or is missing
+
+**Research**: Unlikely — Liquidsoap async hook pattern resolved in Cortex research dossier (F3)
+
 **Plans**: 0 plans
 
-### Phase 3: Deploy & Verify
-
-**Goal**: Containers running in production, Icecast private directory listing confirmed, 1-hour
-unattended run test passes.
-**Depends on**: Phase 2: Routing & Frontend
-**Requirements**: RADIO-06, RADIO-07
-**Success Criteria** (what must be TRUE):
-  1. Icecast `<public>0</public>` confirmed — stream not discoverable via icecast.org or shoutcast directories
-  2. Stream runs 1 hour unattended without interruption or silence gap
-**Research**: Unlikely
-**Plans**: 0 plans
+---
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| Phase 1: Services | 0/0 | Not started | - |
-| Phase 2: Routing & Frontend | 0/0 | Not started | - |
-| Phase 3: Deploy & Verify | 0/0 | Not started | - |
+|---|---|---|---|
+| Phase 1: Schema, Read Layer, and Library Ingest | 0/0 | Not started | - |
+| Phase 2: Writer Hook and Container Wire-up | 0/0 | Not started | - |
