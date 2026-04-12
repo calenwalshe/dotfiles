@@ -26,9 +26,15 @@ graph TD
     CR[Classic Rock & Blues]
     AM[Ambient / Drift]
     AF[Afrobeat & African Electronic]
+    DH[Deep / Disco House]
+    UK[UK Funky & Broken Beat]
+    IT[Industrial Techno]
+    IDM[IDM / Experimental Electronic]
+    IND[Indie & Art Pop]
 
     MH --- OH
     MH --- B25
+    MH --- IT
     OH --- EE
     OH --- SS
     OH --- B25
@@ -40,9 +46,20 @@ graph TD
     LE --- GF
     GF --- CR
     GF --- AM
+    GF --- UK
     AM --- OH
+    AM --- IDM
     B25 --- EE
+    B25 --- DH
     CR --- GF
+    DH --- UK
+    DH --- IDM
+    UK --- DH
+    IT --- MH
+    IT --- IDM
+    IDM --- AM
+    IND --- IDM
+    IND --- GF
 ```
 
 *Nodes in **bold** have library holdings. Grey nodes are mapped but unrepresented — extension targets.*
@@ -352,6 +369,170 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 
 ---
 
+### Deep / Disco House
+
+**What it is:** House music rooted in the warmth of disco and soul. Lush chords, soulful vocals (often sampled), hypnotic groove. Sits between the dancefloor and the living room. Labels like Lobster Theremin and Wolf Music have defined a scrappier, lo-fi version of this; the deeper end bleeds into Larry Heard / Chicago territory.
+
+**Sonic signature:** Warm chord stabs, soul vocal samples or live vocalists, 120–126 BPM, slightly compressed and dusty-sounding. Four-on-the-floor but looser than techno. More swing.
+
+**Geographic roots:** Chicago (origins), UK (Lobster Theremin revival), Amsterdam (Rush Hour, Clone), New York.
+
+**Era:** 1980s origins → ongoing. Current Lobster Theremin / Mister Saturday Night wave: 2010 → present.
+
+**Key labels:** Lobster Theremin, Wolf Music, Permanent Vacation, Rush Hour, Mister Saturday Night
+
+**Edges:**
+- ↔ **Bar 25 / Berlin Deep** (emotional and sonic overlap)
+- ↔ **UK Funky & Broken Beat** (UK label overlap — Lobster Theremin bridges both)
+- ↔ **IDM / Experimental Electronic** (weirder Lobster releases blur the line)
+
+**Library holdings:**
+- [library] Roza Roza — ----- [Lobster Theremin]
+- [library] HLLW — Theme For Abergail [Lobster Theremin]
+- [library] Supreems — Us Together [Lobster Theremin]
+- [library] Dolly Parton — Jolene (Todd Terje Remix) *(edit: Norwegian edit, proto-disco)*
+- [library] DJ Seinfeld — U *(lo-fi house)*
+- [library] Pacific Coliseum — Ocean City *(lo-fi house)*
+- [library] Detroit Swindle — The Wrap Around *(Dutch deep house)*
+- [library] Moodcut — Stuck In Socks *(jazzy deep house)*
+
+**Open slots:**
+- [ ] Larry Heard — Can You Feel It (ancestor node)
+- [ ] Floating Points (deeper end — bridge to IDM)
+- [ ] Palms Trax [Lobster Theremin]
+- [ ] Ross From Friends (deeper tracks — bridge to UK Funky)
+- [ ] Hunee
+
+---
+
+### UK Funky & Broken Beat
+
+**What it is:** Two related UK movements: UK Funky (~2008, South London, percussion-heavy, afrobeats-adjacent garage) and Broken Beat (~2001, Bugz in the Attic, jazzier, Neo Soul influence). Both share UK DNA, non-4/4 sensibility, and a connection to jazz and African rhythms. OOUKFunkyOO YouTube channel curates this space.
+
+**Sonic signature:** UK Funky: loose snares, African percussion, bass-forward, vocals in patois or English. Broken Beat: complex off-grid rhythms, Fender Rhodes, jazz harmony, Neo Soul vocalists. Both feel live and spontaneous.
+
+**Geographic roots:** South London, Brixton, Bristol. Labels in UK exclusively.
+
+**Era:** UK Funky: 2007–2012 (peak), still ongoing. Broken Beat: 2001–2008 (peak), revival 2018+.
+
+**Key labels:** Eglo Records, Brownswood, Warp (adjacent), Tectonic
+
+**Edges:**
+- ↔ **Deep / Disco House** (Lobster Theremin overlap, UK scene connective tissue)
+- ↔ **Global Funk & Psych** (shared jazz and rhythm vocabulary)
+- ↔ **Afrobeat & African Electronic** (direct rhythmic lineage)
+
+**Library holdings:**
+- [library] nodart — Just you [OOUKFunkyOO]
+- [library] Ajukaja — Benga Benga [OOUKFunkyOO]
+- [library] Ross From Friends — Talk To Me You'll Understand [OOUKFunkyOO]
+- [library] Tightshirt — Rampage Funk *(broken beat adjacent)*
+
+**Open slots:**
+- [ ] Floating Points — Vacuum (bridge to IDM/Deep House)
+- [ ] Theo Parrish (deeper end)
+- [ ] Kaidi Tatham
+- [ ] Yussef Kamaal (bridge to jazz)
+- [ ] Dego
+
+---
+
+### Industrial Techno
+
+**What it is:** Techno stripped to its hardest, most mechanical core. Influenced by industrial music, EBM, and noise. Less concerned with emotion or journey, more with physicality and pressure. Berlin's HATE label and its constellation define the current scene.
+
+**Sonic signature:** Distorted kicks, metallic percussion, minimal or absent melody, 130–145 BPM, dark atmosphere. Often sounds like machines in a factory, not instruments. Designed for 3am warehouse spaces.
+
+**Geographic roots:** Berlin (HATE label), Barcelona (Semantica, Jealous God), Detroit (ancestor).
+
+**Era:** 2008 → present. Accelerated with HATE label ~2012.
+
+**Key labels:** HATE, ARTS, Repitch, Jealous God, Semantica
+
+**Edges:**
+- ↔ **Melodic House & Techno** (same BPM range, different emotional register — shared dancefloor)
+- ↔ **IDM / Experimental Electronic** (experimental processing methods overlap)
+
+**Library holdings:**
+- [library] Johannes Heil — B2 [EXILE007] *(KRAFT channel / HATE-adjacent)*
+- [library] Regal — Repeat *(HATE label artist)*
+- [library] Boston 168 — Oblivion [ODDEVEN004] *(HATE label)*
+- [library] Anetha — Acid Train [ANAGRAM007] *(HATE label, acid techno strand)*
+- [library] Victor Ruiz — Interstellar (Original Mix) *(Techno Lovers, Brazilian techno)*
+- [library] Undercatt — Venus (Original Mix) [Diynamic] *(melodic-industrial crossover)*
+- [library] Charles Fenckler — Stellar Acid [Soma Records] *(acid techno)*
+- [library] SLV — Gizeh (Keith Carnal Remix) [VIRGO] *(Keith Carnal / HATE orbit)*
+- [library] 7CIRCLE — Nobody Can Escape From Himself (Keith Carnal Remix) *(HATE)*
+- [library] Anja Schneider — Belize [mobilee] *(melodic-techno bridge)*
+
+**Open slots:**
+- [ ] Surgeon
+- [ ] Ancient Methods
+- [ ] Paula Temple
+- [ ] Blawan (bridge to IDM)
+- [ ] Rebekah
+
+---
+
+### IDM / Experimental Electronic
+
+**What it is:** "Intelligent Dance Music" — music that pushes electronic production into abstract, compositional territory. Warp Records coined the marketing term; the aesthetic is about complexity, texture, and surprise over dancefloor utility. Ranges from rhythmically intricate (Aphex Twin) to near-ambient (Oval).
+
+**Sonic signature:** Irregular or complex rhythms, granular synthesis, unconventional sound design, often non-4/4 or polyrhythmic. Can be beautiful, unsettling, or both simultaneously.
+
+**Geographic roots:** UK (Warp Records, Sheffield/London), Germany (Chain Reaction, Basic Channel).
+
+**Era:** 1992 → present. Warp's Artificial Intelligence comp named the genre.
+
+**Key labels:** Warp, Hyperdub, Raster-Noton, Editions Mego
+
+**Edges:**
+- ↔ **Ambient / Drift** (at the slow/textural end)
+- ↔ **Industrial Techno** (at the rhythmic extreme end)
+- ↔ **Deep / Disco House** (Burial, Four Tet straddle this boundary)
+- ↔ **Indie & Art Pop** (Warp's singer-songwriter signings)
+
+**Library holdings:**
+- [library] Four Tet — Lush *(Warp, IDM-adjacent)* 
+- [library] Matthew Herbert — It's Only (DJ Koze Remix) *(Herbert: found-sound / conceptual electronic)*
+
+**Open slots:**
+- [ ] Burial (bridge to Deep House — Burial & Four Tet tracks excluded as >8min)
+- [ ] Aphex Twin
+- [ ] Boards of Canada
+- [ ] Oval
+- [ ] Autechre
+
+---
+
+### Indie & Art Pop
+
+**What it is:** Guitar-anchored or voice-led pop music with a self-produced, non-commercial sensibility. Operates at the intersection of rock structure and experimental production. In this library context: the few tracks that come from band-world rather than club/DJ world.
+
+**Sonic signature:** Vocals centered in mix, song structure (verse/chorus or equivalent), live or live-sounding instrumentation. Production range from lo-fi bedroom to studio-polished.
+
+**Geographic roots:** Anglo-American primarily, but global now.
+
+**Era:** 1990s → present.
+
+**Edges:**
+- ↔ **Global Funk & Psych** (psychedelic/world-influenced indie)
+- ↔ **IDM / Experimental Electronic** (production experimentation overlap)
+- ↔ **Classic Rock & Blues** (structural ancestor)
+
+**Library holdings:**
+- [library] Warpaint — Love Is To Die (Official Audio) *(LA, post-punk / dream-pop)*
+- [library] CARIBOU — Can't Do Without You *(Dan Snaith / Ontario, psychedelic pop)*
+- [library] Easy Star All-Stars — Time *(reggae covers — Pink Floyd adjacent)*
+
+**Open slots:**
+- [ ] Portishead (bridge to IDM / trip-hop)
+- [ ] Cocteau Twins (bridge to Ambient)
+- [ ] John Cale (ancestor node)
+- [ ] Angel Olsen
+
+---
+
 ### Ambient / Drift
 
 **What it is:** Music where atmosphere supersedes rhythm. The liminal space between music and environment. From Brian Eno's formulation — music that can be heard or ignored, that fits the room.
@@ -467,4 +648,4 @@ Tracks that need classification (filename-only or unclear):
 ---
 
 *Last updated: 2026-04-12*
-*Library snapshot: 69 tracks across ~8 active genera + 2 unmapped (Ambient, Afrobeat)*
+*Library snapshot: 98 tracks across 12 active genera + 2 unmapped (Ambient, Afrobeat)*
