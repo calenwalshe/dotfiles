@@ -449,11 +449,29 @@ Each sheet: description · sonic signature · geographic roots · era · edges �
 - [library] Mikhu — Sorry [SNG001]
 - [library] Vinyl Speed Adjust — Retro
 - [library] Marcman — Drept
+- [library] Palms Trax — Equation [Lobster Theremin]
+- [library] Ross From Friends — Bootman
+- [library] Ross From Friends — Crimson
+- [library] CRi — Stranger (DJ Boring Remix) [Anjunadeep]
+- [library] Sweely — Stronger Than Me [Lobster Theremin]
+- [library] Sweely — Acid City [Lobster Theremin]
+- [library] Sweely — You Do [Lobster Theremin]
+- [library] Jasmín — The Ride ft. Older Brother [Hessle Audio]
+- [library] Gesloten Cirkel — Funkz3
+- [library] Shanti Celeste — Shimmer [Hessle Audio]
+- [library] Randomer & Hodge — Simple As
+- [library] Mall Grab — Who Acid You [Looking For Trouble]
+- [library] Mall Grab — Back 2 Back [International Chrome]
+- [library] Omar S — Romancing the Stone [FXHE]
+- [library] Axel Boman — ABBA 002 [Studio Barnhus]
+- [library] Axel Boman — Barcelona [Studio Barnhus]
+- [library] Galcher Lustwerk — Vestibule [White Material]
+- [library] Galcher Lustwerk — What U Want Me To Do [White Material]
+- [library] Floating Points — LesAlpx
+- [library] Logic1000 — What You Like ft. Yunè Pinku
 
 **Open slots:**
-- [ ] Palms Trax [Lobster Theremin]
 - [ ] Tessio
-- [ ] Ross From Friends (deeper sets)
 - [ ] DJ Stingray (lo-fi strand)
 
 ---
@@ -791,4 +809,4 @@ Tracks that need classification (filename-only or unclear):
 ---
 
 *Last updated: 2026-04-12*
-*Library snapshot: 143 tracks. Deep/Disco House split into 5 sub-genera: Nu-Disco, Lo-fi House, Jazzy Deep House, Balearic, Afro-Cosmic. 20 active genera total.*
+*Library snapshot: 168 tracks. Deep/Disco House split into 5 sub-genera: Nu-Disco, Lo-fi House, Jazzy Deep House, Balearic, Afro-Cosmic. 20 active genera total. Lo-fi House: 31 holdings (11 legacy + 20 anchor batch added 2026-04-12).*
