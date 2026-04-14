@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
 status: in-progress
-stopped_at: 02-01 Docker port rebinding complete (backfill)
-last_updated: "2026-04-14T05:07:00Z"
-last_activity: 2026-04-14 — Completed 02-01-PLAN.md (Docker port rebinding to 127.0.0.1)
+stopped_at: 03-01 Caddy security headers + dashboard auth + VNC cleanup complete
+last_updated: "2026-04-14T05:15:00Z"
+last_activity: 2026-04-14 — Completed 03-01-PLAN.md (Caddy app layer hardening)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-14)
 
 **Core value:** Two active critical compromise vectors are closed (SSH password brute force, Docker UFW bypass), the radio stream remains continuously available, and a PTES-structured pentest confirms all in-scope fixes hold.
-**Current focus:** Phase 1 — SSH & Authentication Hardening
+**Current focus:** Phase 4 — PTES Pentest AC (all hardening plans complete)
 
 ## Current Position
 
-Phase: 2 — Network Hardening
-Plan: 02-01 complete (Docker port rebinding) — 02-02 also complete
-Status: In progress — next: Phase 3 (app layer hardening)
-Last activity: 2026-04-14 — Completed 02-01 Docker port rebinding (backfill execution)
+Phase: 3 — App Layer Hardening (complete)
+Plan: 03-01 complete — all 4 plans done
+Status: In progress — next: Phase 4 (PTES pentest acceptance criteria)
+Last activity: 2026-04-14 — Completed 03-01 Caddy security headers + dashboard auth + VNC cleanup
 
-Progress: [███░░░░░░░░░░░░░░░░░░] 3/4 plans; 0/4 phases complete
+Progress: [████████████████████░] 4/4 plans; 3/4 phases complete
 
 ## Performance Metrics
 
@@ -82,9 +82,18 @@ Key decisions carried forward:
 - auditd left with default rules — no custom rules needed for Phase 1
 - fail2ban was banning live attackers (8 IPs, 47 failed attempts) by the time verification ran
 
+**03-01 Caddy app layer hardening (2026-04-14):**
+- (security_headers) snippet added — HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, -Server
+- import security_headers in all 13 named vhosts; :80 skipped (redirect only)
+- basicauth added to /status, /status/metrics, /costs — username: admin
+- Dashboard password: `u6P4FRokt727+Bq+` (change after review)
+- vnc-auth.calenwalshe.com block removed
+- caddy fmt canonically restructures handles before route into route block — validated correct
+
 ### Pending Todos
 
 - Confirm exact Icecast stream mountpoint URL before Phase 4 stream-health AC check
+- Change dashboard basicauth password from generated value (`u6P4FRokt727+Bq+`)
 
 ### Blockers/Concerns
 
@@ -92,6 +101,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T05:07:00Z
-Stopped at: Completed 02-01-PLAN.md (Docker port rebinding)
+Last session: 2026-04-14T05:15:00Z
+Stopped at: Completed 03-01-PLAN.md (Caddy app layer hardening)
 Resume file: None
