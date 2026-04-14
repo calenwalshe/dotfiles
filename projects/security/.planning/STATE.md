@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
 status: in-progress
-stopped_at: 01-01 SSH Hardening complete
-last_updated: "2026-04-14T12:00:00Z"
-last_activity: 2026-04-14 — Completed 01-01-PLAN.md (SSH hardening)
+stopped_at: 01-02 fail2ban + auditd complete
+last_updated: "2026-04-14T04:48:55Z"
+last_activity: 2026-04-14 — Completed 01-02-PLAN.md (fail2ban + auditd)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
-  percent: 25
+  completed_plans: 2
+  percent: 50
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-14)
 ## Current Position
 
 Phase: 1 — SSH & Authentication Hardening
-Plan: 01-01 complete (SSH hardening)
-Status: In progress — next: 01-02 (fail2ban + auditd)
-Last activity: 2026-04-14 — Completed 01-01 SSH hardening
+Plan: 01-02 complete (fail2ban + auditd)
+Status: In progress — next: Phase 2 (Docker hardening) or remaining Phase 1 plans
+Last activity: 2026-04-14 — Completed 01-02 fail2ban + auditd
 
-Progress: [█░░░░░░░░░░░░░░░░░░░░] 1/4 plans; 0/4 phases complete
+Progress: [██░░░░░░░░░░░░░░░░░░░] 2/4 plans; 0/4 phases complete
 
 ## Performance Metrics
 
@@ -64,6 +64,12 @@ Key decisions carried forward:
 - Pentest AC scoped to in-spec items only (not unbounded scan findings)
 - Verify SSH key auth from second terminal before disabling PasswordAuthentication
 
+**01-02 fail2ban + auditd (2026-04-14):**
+- banaction=ufw chosen — UFW is active firewall, keeps ban state consistent
+- Ports 22+2022 covered in sshd jail — matches both sshd listening ports
+- auditd left with default rules — no custom rules needed for Phase 1
+- fail2ban was banning live attackers (8 IPs, 47 failed attempts) by the time verification ran
+
 ### Pending Todos
 
 - Confirm exact Icecast stream mountpoint URL before Phase 4 stream-health AC check
@@ -74,6 +80,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T12:00:00Z
-Stopped at: Completed 01-01-PLAN.md (SSH hardening)
+Last session: 2026-04-14T04:48:55Z
+Stopped at: Completed 01-02-PLAN.md (fail2ban + auditd)
 Resume file: None
