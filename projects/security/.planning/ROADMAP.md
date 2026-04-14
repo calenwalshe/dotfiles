@@ -68,7 +68,7 @@ Harden the radio.calenwalshe.com VPS (149.28.12.120, Ubuntu 24.04.3 LTS) against
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| Phase 1: SSH & Authentication Hardening | 0/0 | Not started | - |
-| Phase 2: Network Exposure Closure | 0/0 | Not started | - |
-| Phase 3: Application Layer Hardening | 0/0 | Not started | - |
-| Phase 4: Pentest & Closure Verification | 0/0 | Not started | - |
+| Phase 1: SSH & Authentication Hardening | 2/2 | Complete | 2026-04-14 |
+| Phase 2: Network Exposure Closure | 2/2 | Complete | 2026-04-14 |
+| Phase 3: Application Layer Hardening | 1/1 | Complete | 2026-04-14 |
+| Phase 4: Pentest & Closure Verification | 3/3 | Complete | 2026-04-14 |

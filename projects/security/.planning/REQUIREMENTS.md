@@ -11,20 +11,20 @@ None formalized with REQ-IDs. All requirements are derived directly from the con
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SSH: PasswordAuthentication no + PermitRootLogin no | Phase 1: SSH & Authentication | Pending |
-| SSH: X11Forwarding no + GatewayPorts no + LogLevel VERBOSE | Phase 1: SSH & Authentication | Pending |
-| Port 2022 identified and resolved | Phase 1: SSH & Authentication | Pending |
-| fail2ban installed, active, sshd jail enabled | Phase 1: SSH & Authentication | Pending |
-| auditd installed and active | Phase 1: SSH & Authentication | Pending |
-| Docker services rebound to 127.0.0.1 (no 0.0.0.0 except Caddy 80/443) | Phase 2: Network Exposure Closure | Pending |
-| Key Docker ports filtered/closed externally (nmap confirmed) | Phase 2: Network Exposure Closure | Pending |
-| sysctl hardening applied (rp_filter=1, send_redirects=0, log_martians=1) | Phase 2: Network Exposure Closure | Pending |
-| UFW logging at medium | Phase 2: Network Exposure Closure | Pending |
-| Caddy security headers on all vhosts (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy) | Phase 3: Application Layer | Pending |
-| Dashboard routes /status and /costs return 401/403 | Phase 3: Application Layer | Pending |
-| vnc-auth.calenwalshe.com removed from Caddyfile | Phase 3: Application Layer | Pending |
-| Radio stream accessible (curl /stream returns 200/302) | Phase 4: Pentest & Closure | Pending |
-| Pentest findings report exists, all in-scope Critical/High closed | Phase 4: Pentest & Closure | Pending |
+| SSH: PasswordAuthentication no + PermitRootLogin no | Phase 1: SSH & Authentication | Complete |
+| SSH: X11Forwarding no + GatewayPorts no + LogLevel VERBOSE | Phase 1: SSH & Authentication | Complete |
+| Port 2022 identified and resolved | Phase 1: SSH & Authentication | Complete |
+| fail2ban installed, active, sshd jail enabled | Phase 1: SSH & Authentication | Complete |
+| auditd installed and active | Phase 1: SSH & Authentication | Complete |
+| Docker services rebound to 127.0.0.1 (no 0.0.0.0 except Caddy 80/443) | Phase 2: Network Exposure Closure | Complete |
+| Key Docker ports filtered/closed externally (nmap confirmed) | Phase 2: Network Exposure Closure | Complete |
+| sysctl hardening applied (rp_filter=1, send_redirects=0, log_martians=1) | Phase 2: Network Exposure Closure | Complete |
+| UFW logging at medium | Phase 2: Network Exposure Closure | Complete |
+| Caddy security headers on all vhosts (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy) | Phase 3: Application Layer | Complete |
+| Dashboard routes /status and /costs return 401/403 | Phase 3: Application Layer | Complete |
+| vnc-auth.calenwalshe.com removed from Caddyfile | Phase 3: Application Layer | Complete |
+| Radio stream accessible (curl /stream returns 200/302) | Phase 4: Pentest & Closure | Complete |
+| Pentest findings report exists, all in-scope Critical/High closed | Phase 4: Pentest & Closure | Complete |
 
 **Coverage:**
 - Hardening requirements: 14 total — all mapped
