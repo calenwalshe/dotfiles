@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
 status: in-progress
-stopped_at: 03-01 Caddy security headers + dashboard auth + VNC cleanup complete
-last_updated: "2026-04-14T05:15:00Z"
-last_activity: 2026-04-14 — Completed 03-01-PLAN.md (Caddy app layer hardening)
+stopped_at: 04-01 Pentest tools installed + stream health verified
+last_updated: "2026-04-14T05:20:00Z"
+last_activity: 2026-04-14 — Completed 04-01-PLAN.md (Install pentest tools + stream health verify)
 progress:
   total_phases: 4
   completed_phases: 0
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-14)
 
 ## Current Position
 
-Phase: 3 — App Layer Hardening (complete)
-Plan: 03-01 complete — all 4 plans done
-Status: In progress — next: Phase 4 (PTES pentest acceptance criteria)
-Last activity: 2026-04-14 — Completed 03-01 Caddy security headers + dashboard auth + VNC cleanup
+Phase: 4 — PTES Pentest AC (in progress)
+Plan: 04-01 complete — 1/3 phase-4 plans done
+Status: In progress — next: 04-02 (lynis audit run) and 04-03 (nuclei + testssl scan)
+Last activity: 2026-04-14 — Completed 04-01 pentest tools install + stream health verify
 
-Progress: [████████████████████░] 4/4 plans; 3/4 phases complete
+Progress: [█████████████████████░░░░] 5/7 plans complete
 
 ## Performance Metrics
 
@@ -92,8 +92,15 @@ Key decisions carried forward:
 
 ### Pending Todos
 
-- Confirm exact Icecast stream mountpoint URL before Phase 4 stream-health AC check
 - Change dashboard basicauth password from generated value (`u6P4FRokt727+Bq+`)
+
+**04-01 Pentest tools install (2026-04-14):**
+- lynis 3.0.9 installed via apt
+- nuclei v3.7.1 installed via go install to ~/go/bin (GOPATH=$HOME/go)
+- testssl.sh 3.3dev cloned to ~/testssl.sh (shallow clone)
+- stream health confirmed: https://radio.calenwalshe.com/stream.mp3 → HTTP/2 200 audio/mpeg
+- GOOGLE_API_CX warning from nuclei is benign (unrelated env var, does not affect operation)
+- Stream mountpoint pending todo from 03-01 resolved: /stream.mp3 confirmed
 
 ### Blockers/Concerns
 
@@ -101,6 +108,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T05:15:00Z
-Stopped at: Completed 03-01-PLAN.md (Caddy app layer hardening)
+Last session: 2026-04-14T05:20:00Z
+Stopped at: Completed 04-01-PLAN.md (Install pentest tools + stream health verify)
 Resume file: None
