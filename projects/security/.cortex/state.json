@@ -1,0 +1,66 @@
+{
+  "slug": "server-hardening",
+  "mode": "execute",
+  "approval_status": "approved",
+  "active_contract": "docs/cortex/contracts/server-hardening/contract-001.md",
+  "artifacts": [
+    "docs/cortex/clarify/server-hardening/20260414T032326Z-clarify-brief.md",
+    "docs/cortex/research/server-hardening/current-understanding.md",
+    "docs/cortex/research/server-hardening/concept-20260414T033547Z.md",
+    "docs/cortex/research/server-hardening/concept-pentest-protocol-20260414T034941Z.md",
+    "docs/cortex/specs/server-hardening/spec.md",
+    "docs/cortex/specs/server-hardening/gsd-handoff.md",
+    "docs/cortex/contracts/server-hardening/contract-001.md"
+  ],
+  "approvals": { "contract": false, "evals": false },
+  "critique_receipts": [
+    {
+      "gate": "clarify",
+      "slug": "server-hardening",
+      "timestamp": "2026-04-14T03:24:29Z",
+      "severity": "STOP",
+      "finding_count": 5,
+      "stop_count": 3,
+      "caution_count": 2,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/server-hardening/critique-clarify.md"
+    },
+    {
+      "gate": "dossier",
+      "slug": "server-hardening",
+      "timestamp": "2026-04-14T03:37:43Z",
+      "severity": "STOP",
+      "finding_count": 3,
+      "stop_count": 2,
+      "caution_count": 1,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/server-hardening/critique-dossier-20260414T033547Z.md"
+    },
+    {
+      "gate": "spec",
+      "slug": "server-hardening",
+      "timestamp": "2026-04-14T04:13:16Z",
+      "severity": "STOP",
+      "finding_count": 4,
+      "stop_count": 2,
+      "caution_count": 2,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/server-hardening/critique-spec.md"
+    }
+  ],
+  "gates": {
+    "clarify_complete": true,
+    "research_complete": true,
+    "spec_complete": true,
+    "contract_approved": false,
+    "pr_opened": false,
+    "pr_merged": false
+  },
+  "github": {
+    "pr_number": null,
+    "pr_url": null,
+    "issue_number": null,
+    "branch": "feat/knowledge-consolidation-engine"
+  },
+  "paused_slugs": []
+}
