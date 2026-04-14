@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
 status: in-progress
-stopped_at: 04-01 Pentest tools installed + stream health verified
-last_updated: "2026-04-14T05:20:00Z"
-last_activity: 2026-04-14 — Completed 04-01-PLAN.md (Install pentest tools + stream health verify)
+stopped_at: 04-02 PTES pentest scan complete (nmap, testssl, nuclei, lynis)
+last_updated: "2026-04-14T05:45:00Z"
+last_activity: 2026-04-14 — Completed 04-02-PLAN.md (PTES Phases 0-2 pentest scans)
 progress:
   total_phases: 4
   completed_phases: 0
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-14)
 ## Current Position
 
 Phase: 4 — PTES Pentest AC (in progress)
-Plan: 04-01 complete — 1/3 phase-4 plans done
-Status: In progress — next: 04-02 (lynis audit run) and 04-03 (nuclei + testssl scan)
-Last activity: 2026-04-14 — Completed 04-01 pentest tools install + stream health verify
+Plan: 04-02 complete — 2/3 phase-4 plans done
+Status: In progress — next: 04-03 (findings analysis + remediation plan)
+Last activity: 2026-04-14 — Completed 04-02 PTES pentest scans (nmap, testssl, nuclei, lynis)
 
-Progress: [█████████████████████░░░░] 5/7 plans complete
+Progress: [███████████████████████░░] 6/7 plans complete
 
 ## Performance Metrics
 
@@ -102,12 +102,20 @@ Key decisions carried forward:
 - GOOGLE_API_CX warning from nuclei is benign (unrelated env var, does not affect operation)
 - Stream mountpoint pending todo from 03-01 resolved: /stream.mp3 confirmed
 
+**04-02 PTES Pentest Scans (2026-04-14):**
+- nuclei template paths are full paths (~/nuclei-templates/http/cves/ etc.), not bare names
+- testssl.sh grades via Cloudflare edge — TLS 1.0/1.1 is Cloudflare policy, origin Caddy enforces TLS 1.2+
+- Ports 7878/8989/9696/9080 are internet-exposed (Radarr/Sonarr/Prowlarr, Python HTTP) — separate compose projects, not rebound in phase 02
+- Redis has no requirepass (DBS-1884) — risk depends on bind address
+- lynis hardening index: 63/100, 1 warning (vulnerable packages), 52 suggestions
+- Scan outputs in /tmp/pentest/ — not versioned
+
 ### Blockers/Concerns
 
 None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T05:20:00Z
-Stopped at: Completed 04-01-PLAN.md (Install pentest tools + stream health verify)
+Last session: 2026-04-14T05:45:00Z
+Stopped at: Completed 04-02-PLAN.md (PTES pentest scans — nmap, testssl, nuclei, lynis)
 Resume file: None
