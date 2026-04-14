@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
-status: in-progress
-stopped_at: 04-02 PTES pentest scan complete (nmap, testssl, nuclei, lynis)
-last_updated: "2026-04-14T05:45:00Z"
-last_activity: 2026-04-14 — Completed 04-02-PLAN.md (PTES Phases 0-2 pentest scans)
+status: complete
+stopped_at: 04-03 COMPLETE — pentest findings report and closure verification done
+last_updated: "2026-04-14T05:52:00Z"
+last_activity: 2026-04-14 — Completed 04-03-PLAN.md (findings report, closure PoCs)
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 4
+  total_plans: 7
+  completed_plans: 7
   percent: 100
 ---
 
@@ -21,29 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-14)
 
 **Core value:** Two active critical compromise vectors are closed (SSH password brute force, Docker UFW bypass), the radio stream remains continuously available, and a PTES-structured pentest confirms all in-scope fixes hold.
-**Current focus:** Phase 4 — PTES Pentest AC (all hardening plans complete)
+**Current focus:** COMPLETE — all 4 phases, 7 plans done
 
 ## Current Position
 
-Phase: 4 — PTES Pentest AC (in progress)
-Plan: 04-02 complete — 2/3 phase-4 plans done
-Status: In progress — next: 04-03 (findings analysis + remediation plan)
-Last activity: 2026-04-14 — Completed 04-02 PTES pentest scans (nmap, testssl, nuclei, lynis)
+Phase: 4 of 4 (PTES Pentest AC) — COMPLETE
+Plan: 04-03 complete — 3/3 phase-4 plans done, 7/7 total plans done
+Status: COMPLETE
+Last activity: 2026-04-14 — Completed 04-03 closure verification and findings report
 
-Progress: [███████████████████████░░] 6/7 plans complete
+Progress: [███████████████████████████] 7/7 plans complete (100%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| - | - | - | - |
+- Total plans completed: 7
+- Engagement date: 2026-04-14 (single-day)
 
 ## Accumulated Context
 
@@ -90,10 +83,6 @@ Key decisions carried forward:
 - vnc-auth.calenwalshe.com block removed
 - caddy fmt canonically restructures handles before route into route block — validated correct
 
-### Pending Todos
-
-- Change dashboard basicauth password from generated value (`u6P4FRokt727+Bq+`)
-
 **04-01 Pentest tools install (2026-04-14):**
 - lynis 3.0.9 installed via apt
 - nuclei v3.7.1 installed via go install to ~/go/bin (GOPATH=$HOME/go)
@@ -110,12 +99,27 @@ Key decisions carried forward:
 - lynis hardening index: 63/100, 1 warning (vulnerable packages), 52 suggestions
 - Scan outputs in /tmp/pentest/ — not versioned
 
+**04-03 Closure Verification + Findings Report (2026-04-14):**
+- Cloudflare strips Authorization header — /status and /costs return 404 via public URL, 401 on direct-origin test. Auth is functioning. PoC: `curl --insecure -H "Host: radio.calenwalshe.com" https://149.28.12.120/status` → 401
+- `server: cloudflare` in public responses is CF's addition. Caddy `-Server` directive suppresses Caddy's own header correctly. Not a disclosure issue for Caddy.
+- All 7 in-scope findings CLOSED. Report at docs/findings/server-hardening-pentest-20260414.md
+- Radio stream live throughout (no downtime across entire engagement)
+
+### Pending Todos
+
+- Change dashboard basicauth password from generated value (`u6P4FRokt727+Bq+`)
+- FIND-008: Rebind Radarr/Sonarr/Prowlarr ports to 127.0.0.1 in their separate compose file
+- FIND-009: Rebind smart-router 9080 to 127.0.0.1
+- FIND-010: `sudo apt upgrade` for PKGS-7392 vulnerable packages
+- FIND-011: Add `AllowTcpForwarding no` / `AllowAgentForwarding no` to sshd_config
+- FIND-012: Add custom auditd rules for privilege escalation monitoring
+
 ### Blockers/Concerns
 
-None.
+None — engagement complete.
 
 ## Session Continuity
 
-Last session: 2026-04-14T05:45:00Z
-Stopped at: Completed 04-02-PLAN.md (PTES pentest scans — nmap, testssl, nuclei, lynis)
+Last session: 2026-04-14T05:52:00Z
+Stopped at: Completed 04-03-PLAN.md — engagement COMPLETE
 Resume file: None
