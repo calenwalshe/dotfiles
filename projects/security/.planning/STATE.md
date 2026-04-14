@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
-status: planning
-stopped_at: Bridge import complete
-last_updated: "2026-04-14T04:20:00Z"
-last_activity: 2026-04-14 — Bridge import from Cortex artifacts
+status: in-progress
+stopped_at: 01-01 SSH Hardening complete
+last_updated: "2026-04-14T12:00:00Z"
+last_activity: 2026-04-14 — Completed 01-01-PLAN.md (SSH hardening)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 4
+  completed_plans: 1
+  percent: 25
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-14)
 ## Current Position
 
 Phase: 1 — SSH & Authentication Hardening
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-04-14 — Bridge import complete
+Plan: 01-01 complete (SSH hardening)
+Status: In progress — next: 01-02 (fail2ban + auditd)
+Last activity: 2026-04-14 — Completed 01-01 SSH hardening
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░] 0/0 plans; 0/4 phases complete
+Progress: [█░░░░░░░░░░░░░░░░░░░░] 1/4 plans; 0/4 phases complete
 
 ## Performance Metrics
 
@@ -51,6 +51,12 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░] 0/0 
 
 Bridge import from Cortex contract: docs/cortex/contracts/server-hardening/contract-001.md
 
+**01-01 SSH Hardening (2026-04-14):**
+- PasswordAuthentication disabled in `/etc/ssh/sshd_config.d/50-cloud-init.conf` (cloud-init override takes precedence)
+- PermitRootLogin, X11Forwarding, GatewayPorts, LogLevel changed in `/etc/ssh/sshd_config`
+- Port 2022 (etserver/EternalTerminal) is blocked by UFW default deny — no change needed
+- All five sshd -T values verified: passwordauthentication no, permitrootlogin no, x11forwarding no, gatewayports no, loglevel VERBOSE
+
 Key decisions carried forward:
 - Docker port rebind to 127.0.0.1 (not DOCKER-USER iptables — ephemeral)
 - fail2ban with `banaction = ufw` (not CrowdSec — RAM overhead)
@@ -68,6 +74,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T04:20:00Z
-Stopped at: Bridge import complete
+Last session: 2026-04-14T12:00:00Z
+Stopped at: Completed 01-01-PLAN.md (SSH hardening)
 Resume file: None
