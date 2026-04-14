@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
-status: complete
-stopped_at: 04-03 COMPLETE — pentest findings report and closure verification done
+status: archived
+stopped_at: v1.0 milestone archived — all 12 findings closed, engagement complete
 last_updated: "2026-04-14T05:52:00Z"
 last_activity: 2026-04-14 — Completed 04-03-PLAN.md (findings report, closure PoCs)
 progress:

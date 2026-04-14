@@ -10,9 +10,26 @@ Two active critical compromise vectors are closed (SSH password brute force, Doc
 
 ## Requirements
 
+### Validated
+
+- ✓ SSH: PasswordAuthentication no + PermitRootLogin no — v1.0
+- ✓ SSH: X11Forwarding no + GatewayPorts no + LogLevel VERBOSE — v1.0
+- ✓ Port 2022 identified (etserver) and accept-risked — v1.0
+- ✓ fail2ban installed, active, sshd jail enabled — v1.0
+- ✓ auditd installed and active with custom ruleset — v1.0
+- ✓ Docker services rebound to 127.0.0.1 — v1.0
+- ✓ Key Docker ports filtered/closed externally — v1.0
+- ✓ sysctl hardening applied — v1.0
+- ✓ UFW logging at medium — v1.0
+- ✓ Caddy security headers on all vhosts — v1.0
+- ✓ Dashboard routes /status+/costs return 401 — v1.0
+- ✓ vnc-auth.calenwalshe.com removed from Caddyfile — v1.0
+- ✓ Radio stream accessible throughout — v1.0
+- ✓ Pentest findings report, all in-scope Critical/High closed — v1.0
+
 ### Active
 
-None formalized. All requirements derived from contract-001.md done criteria and spec acceptance criteria.
+None — v1.0 complete. Start fresh with `/gsd:define-requirements` for next milestone.
 
 ### Out of Scope
 
@@ -49,8 +66,11 @@ None formalized. All requirements derived from contract-001.md done criteria and
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| 127.0.0.1 rebind over DOCKER-USER iptables DROP | Durable across reboots; no iptables-persistent dependency | All internal docker-compose bindings → 127.0.0.1 |
-| fail2ban over CrowdSec | 50–100MB RAM overhead not justified; fail2ban covers SSH brute force | fail2ban with `banaction = ufw` |
-| sysctl in /etc/sysctl.d/99-hardening.conf | Never edit base sysctl.conf; drop file survives upgrades | New file at 99-hardening.conf |
-| PTES pentest as closure gate | Each fix retested with original PoC — not assumed closed on deploy | PTES phases 0–6, CVSS v3.1 scoring |
-| Pentest AC scoped to in-spec items | Prevents unbounded scope expansion from unrelated scan findings | New findings documented but don't block |
+| 127.0.0.1 rebind over DOCKER-USER iptables DROP | Durable across reboots; no iptables-persistent dependency | ✓ All internal docker-compose bindings → 127.0.0.1 |
+| fail2ban over CrowdSec | 50–100MB RAM overhead not justified; fail2ban covers SSH brute force | ✓ fail2ban with `banaction = ufw`, banning live attackers |
+| sysctl in /etc/sysctl.d/99-hardening.conf | Never edit base sysctl.conf; drop file survives upgrades | ✓ New file at 99-hardening.conf |
+| PTES pentest as closure gate | Each fix retested with original PoC — not assumed closed on deploy | ✓ PTES phases 0–6, CVSS v3.1, 12/12 findings closed |
+| Pentest AC scoped to in-spec items | Prevents unbounded scope expansion from unrelated scan findings | ✓ Additional findings documented and subsequently all closed |
+
+---
+*Last updated: 2026-04-14 after v1.0 milestone*
