@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: server-hardening
 status: in-progress
-stopped_at: 02-02 sysctl hardening + UFW logging complete
-last_updated: "2026-04-14T04:52:57Z"
-last_activity: 2026-04-14 — Completed 02-02-PLAN.md (sysctl hardening + UFW logging)
+stopped_at: 02-01 Docker port rebinding complete (backfill)
+last_updated: "2026-04-14T05:07:00Z"
+last_activity: 2026-04-14 — Completed 02-01-PLAN.md (Docker port rebinding to 127.0.0.1)
 progress:
   total_phases: 4
   completed_phases: 0
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-14)
 ## Current Position
 
 Phase: 2 — Network Hardening
-Plan: 02-02 complete (sysctl hardening + UFW logging)
-Status: In progress — next: Phase 3 (app layer) or remaining Phase 2 plans
-Last activity: 2026-04-14 — Completed 02-02 sysctl hardening + UFW logging
+Plan: 02-01 complete (Docker port rebinding) — 02-02 also complete
+Status: In progress — next: Phase 3 (app layer hardening)
+Last activity: 2026-04-14 — Completed 02-01 Docker port rebinding (backfill execution)
 
 Progress: [███░░░░░░░░░░░░░░░░░░] 3/4 plans; 0/4 phases complete
 
@@ -64,6 +64,13 @@ Key decisions carried forward:
 - Pentest AC scoped to in-spec items only (not unbounded scan findings)
 - Verify SSH key auth from second terminal before disabling PasswordAuthentication
 
+**02-01 Docker port rebinding (2026-04-14):**
+- 18 internal service ports rebound from 0.0.0.0 to 127.0.0.1 in docker-compose.yml
+- docker compose v2 (space syntax) required — v1 has KeyError:ContainerConfig bug with newer images
+- magmalab-*, chat-frontend/backend, imagen-bridge left as-is (separate compose projects, out of scope)
+- Caddy 80/443 kept as public bindings (intentional)
+- Verified via ss: all services listen on 127.0.0.1 only
+
 **02-02 sysctl hardening + UFW logging (2026-04-14):**
 - ip_forward NOT set to 0 — Docker requires net.ipv4.ip_forward = 1
 - docker0.rp_filter = 2 (Docker-managed) — accepted, global all.rp_filter = 1 is authoritative for non-Docker interfaces
@@ -85,6 +92,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-14T04:52:57Z
-Stopped at: Completed 02-02-PLAN.md (sysctl hardening + UFW logging)
+Last session: 2026-04-14T05:07:00Z
+Stopped at: Completed 02-01-PLAN.md (Docker port rebinding)
 Resume file: None
