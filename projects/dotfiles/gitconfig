@@ -1,0 +1,13 @@
+[user]
+  name = Calen Walshe
+  email = calenwalshe@meta.com
+
+[http "https://git.c2p.facebook.net"]
+  sslCert = /var/facebook/credentials/calenwalshe/x509/calenwalshe.pem
+
+[credential "https://ghe.oculus-rep.com"]
+	helper = store
+[http]
+	proxy = http://localhost:10054
+[https]
+	proxy = http://localhost:10054
