@@ -4,7 +4,6 @@
 # ============================================================================
 
 # --- Core Aliases ---
-alias santup='/Library/CPE/supportapp/santa_sync.command ; exit'
 alias claude='/usr/local/bin/claude_code/claude'
 alias beatengine="/Users/calenwalshe/Documents/projects/beatengine/output/start.sh"
 
@@ -15,7 +14,7 @@ export PATH="/Applications/SuperCollider.app/Contents/MacOS:/Applications/SuperC
 export PATH="$HOME/bin:$PATH"
 
 # --- API Keys ---
-export OPENAI_API_KEY=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
+# source ~/.api-keys  # keep secrets out of dotfiles
 
 # --- Terminal quality-of-life additions ---
 if command -v bat >/dev/null 2>&1; then
@@ -32,11 +31,6 @@ export LESS='-R'
 
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
-fi
-
-# --- Manifold Helpers ---
-if [ -f ~/.manifold_helpers.sh ]; then
-  source ~/.manifold_helpers.sh
 fi
 
 # --- Quick SSH Aliases ---
@@ -116,715 +110,6 @@ be() {
 }
 
 # ============================================================================
-# OnDemand Manager (TUI)
-# ============================================================================
-
-# Main OD manager with interactive TUI
-od() {
-  local servers=()
-  local server_info=()
-
-  # Parse dev list output
-  local od_regex='([0-9]+\.od)[[:space:]]*\(([^)]+)\)'
-  while IFS= read -r line; do
-    if [[ "$line" =~ $od_regex ]]; then
-      servers+=("${match[1]}")
-      server_info+=("${match[1]} (${match[2]})")
-    fi
-  done < <(dev list 2>/dev/null | grep -E '[0-9]+\.od')
-
-  # Display header
-  echo ""
-  echo "╭─ OnDemand Manager ─────────────────────────────────╮"
-
-  # Show active instances
-  if [[ ${#servers[@]} -gt 0 ]]; then
-    echo "│ Active Instances:                                  │"
-    local i=1
-    for info in "${server_info[@]}"; do
-      printf "│   %d) %-46s │\n" "$i" "$info"
-      ((i++))
-    done
-  else
-    echo "│ Active Instances: (none)                           │"
-  fi
-
-  echo "├────────────────────────────────────────────────────┤"
-  echo "│ Actions:                                           │"
-  if [[ ${#servers[@]} -gt 0 ]]; then
-    echo "│   [c] Connect to existing instance                 │"
-  fi
-  echo "│   [n] New instance                                  │"
-  echo "│   [b] Restore from backup                           │"
-  if [[ ${#servers[@]} -gt 0 ]]; then
-    echo "│   [r] Release instance                             │"
-  fi
-  echo "│   [q] Quit                                          │"
-  echo "╰────────────────────────────────────────────────────╯"
-  echo ""
-
-  read "action?> "
-
-  case "$action" in
-    c|C)
-      if [[ ${#servers[@]} -eq 0 ]]; then
-        echo "No instances to connect to."
-        return 1
-      fi
-      _od_connect_existing "${servers[@]}"
-      ;;
-    n|N)
-      _od_new_instance
-      ;;
-    b|B)
-      _od_restore_backup
-      ;;
-    r|R)
-      if [[ ${#servers[@]} -eq 0 ]]; then
-        echo "No instances to release."
-        return 1
-      fi
-      _od_release "${servers[@]}"
-      ;;
-    q|Q|"")
-      return 0
-      ;;
-    *)
-      echo "Invalid selection"
-      return 1
-      ;;
-  esac
-}
-
-# Connect to existing instance
-_od_connect_existing() {
-  local servers=("$@")
-
-  if [[ ${#servers[@]} -eq 1 ]]; then
-    local selected="${servers[1]}"
-  else
-    echo ""
-    echo "Select instance:"
-    local i=1
-    for s in "${servers[@]}"; do
-      echo "  $i) $s"
-      ((i++))
-    done
-    read "choice?> "
-
-    if [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-      selected="${servers[$choice]}"
-    else
-      echo "Invalid selection"
-      return 1
-    fi
-  fi
-
-  echo ""
-  echo "Connection type: [e]t (recommended)  [m]osh  [s]sh"
-  read "conn?> "
-
-  local conn_flag="--et"
-  case "$conn" in
-    m|M) conn_flag="--mosh" ;;
-    s|S) conn_flag="--ssh" ;;
-  esac
-
-  local server_fqdn="${selected}.fbinfra.net"
-  echo "Connecting to ${server_fqdn}..."
-
-  # Blue-purple tint for OD sessions
-  printf '\033]11;#1e1e28\007'
-
-  dev connect $conn_flag --hostname "$selected"
-  local exit_code=$?
-
-  # Restore black background
-  printf '\033]11;#000000\007'
-  return $exit_code
-}
-
-# Create new instance
-_od_new_instance() {
-  echo ""
-  echo "╭─ New Instance ─────────────────────────────────────╮"
-  echo "│ Select type:                                       │"
-  echo "│   1) www           6) configerator                 │"
-  echo "│   2) fbcode        7) gpu                          │"
-  echo "│   3) mobile        8) dataswarm                    │"
-  echo "│   4) instagram     9) shellserver                  │"
-  echo "│   5) unity        10) [custom]                     │"
-  echo "╰────────────────────────────────────────────────────╯"
-  read "type_choice?Type [1-10]: "
-
-  local od_type=""
-  case "$type_choice" in
-    1) od_type="www" ;;
-    2) od_type="fbcode" ;;
-    3) od_type="mobile" ;;
-    4) od_type="instagram" ;;
-    5) od_type="unity" ;;
-    6) od_type="configerator" ;;
-    7) od_type="gpu" ;;
-    8) od_type="dataswarm" ;;
-    9) od_type="shellserver" ;;
-    10)
-      read "od_type?Enter type name: "
-      ;;
-    *)
-      echo "Invalid selection"
-      return 1
-      ;;
-  esac
-
-  echo ""
-  echo "Connection: [e]t (recommended)  [m]osh  [s]sh"
-  read "conn?> "
-
-  local conn_flag="--et"
-  case "$conn" in
-    m|M) conn_flag="--mosh" ;;
-    s|S) conn_flag="--ssh" ;;
-  esac
-
-  # GPU-specific options
-  local extra_flags=""
-  if [[ "$od_type" == "gpu" ]]; then
-    echo ""
-    echo "GPU reservation days [1-6, default=1]: "
-    read "days?"
-    if [[ "$days" =~ ^[1-6]$ ]]; then
-      extra_flags="--expiration $days"
-    fi
-  fi
-
-  echo ""
-  echo "Creating $od_type instance..."
-
-  # Blue-purple tint for OD sessions
-  printf '\033]11;#1e1e28\007'
-
-  dev connect $conn_flag --type "$od_type" $extra_flags
-  local exit_code=$?
-
-  # Restore black background
-  printf '\033]11;#000000\007'
-  return $exit_code
-}
-
-# Release instance
-_od_release() {
-  local servers=("$@")
-
-  echo ""
-  echo "Release which instance?"
-  local i=1
-  for s in "${servers[@]}"; do
-    echo "  $i) $s"
-    ((i++))
-  done
-  echo "  a) All instances"
-  read "choice?> "
-
-  if [[ "$choice" == "a" || "$choice" == "A" ]]; then
-    echo "Releasing all instances..."
-    dev release --all
-  elif [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-    local selected="${servers[$choice]}"
-    echo "Releasing $selected..."
-    dev release --hostname "$selected"
-  else
-    echo "Invalid selection"
-    return 1
-  fi
-}
-
-# Restore from backup
-_od_restore_backup() {
-  echo ""
-  echo "╭─ Restore from Backup ──────────────────────────────╮"
-  echo "│                                                    │"
-  echo "│ What would you like to restore?                    │"
-  echo "│                                                    │"
-  echo "│   [h] Home directory (dotfiles, configs, files)    │"
-  echo "│   [r] Repo backup (from backup ID)                 │"
-  echo "│   [o] Open backups page in browser                 │"
-  echo "│   [q] Back                                         │"
-  echo "│                                                    │"
-  echo "╰────────────────────────────────────────────────────╯"
-  read "restore_type?> "
-
-  case "$restore_type" in
-    h|H)
-      _od_restore_homedir
-      return $?
-      ;;
-    r|R)
-      _od_restore_repo_backup
-      return $?
-      ;;
-    o|O)
-      echo "Opening backups page..."
-      open "https://internalfb.com/intern/ondemand/backup/"
-      return 0
-      ;;
-    q|Q|"")
-      return 0
-      ;;
-    *)
-      echo "Invalid selection"
-      return 1
-      ;;
-  esac
-}
-
-# Restore home directory from previous OD
-_od_restore_homedir() {
-  echo ""
-  echo "╭─ Restore Home Directory ────────────────────────────╮"
-  echo "│                                                     │"
-  echo "│ This restores your home directory (dotfiles,        │"
-  echo "│ configs, non-repo files) from a previous OD.        │"
-  echo "│                                                     │"
-  echo "│ NOTE: You must be connected to an OD to restore.    │"
-  echo "│                                                     │"
-  echo "╰─────────────────────────────────────────────────────╯"
-  echo ""
-
-  # Check if we have active ODs
-  local servers=($(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | sort -u))
-
-  if [[ ${#servers[@]} -eq 0 ]]; then
-    echo "No active OD instances. Create one first, then restore."
-    echo ""
-    read "create?Create new instance now? [y/N]: "
-    if [[ "$create" == "y" || "$create" == "Y" ]]; then
-      _od_new_instance
-      echo ""
-      echo "After connecting, run: sudo bkuptool restore --host <old_hostname> --force"
-    fi
-    return 0
-  fi
-
-  echo "Enter the OLD hostname to restore FROM (e.g., 12345.od):"
-  read "old_host?Old hostname: "
-
-  if [[ -z "$old_host" ]]; then
-    echo "No hostname provided."
-    return 1
-  fi
-
-  # Normalize hostname
-  [[ "$old_host" =~ ^[0-9]+$ ]] && old_host="${old_host}.od"
-
-  echo ""
-  echo "Select the OD to restore TO:"
-  local i=1
-  for s in "${servers[@]}"; do
-    echo "  $i) $s"
-    ((i++))
-  done
-  read "choice?> "
-
-  local target_od=""
-  if [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-    target_od="${servers[$choice]}"
-  else
-    echo "Invalid selection"
-    return 1
-  fi
-
-  local target_fqdn="${target_od}.fbinfra.net"
-
-  echo ""
-  echo "╭─────────────────────────────────────────────────────╮"
-  echo "│ Ready to restore:                                   │"
-  echo "│   FROM: $old_host"
-  echo "│   TO:   $target_od"
-  echo "╰─────────────────────────────────────────────────────╯"
-  echo ""
-  read "confirm?Proceed? [y/N]: "
-
-  if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-    echo "Cancelled."
-    return 0
-  fi
-
-  echo ""
-  echo "Restoring home directory..."
-  echo "Running: ssh $target_fqdn 'sudo bkuptool restore --host $old_host --force'"
-  echo ""
-
-  ssh "$target_fqdn" "sudo bkuptool restore --host $old_host --force"
-  local exit_code=$?
-
-  if [[ $exit_code -eq 0 ]]; then
-    echo ""
-    echo "✓ Home directory restored successfully!"
-    echo ""
-    read "connect?Connect to $target_od now? [Y/n]: "
-    if [[ "$connect" != "n" && "$connect" != "N" ]]; then
-      _od_connect_existing "$target_od"
-    fi
-  else
-    echo ""
-    echo "✗ Restore failed (exit code: $exit_code)"
-    echo "  Try running manually: sudo bkuptool find --host $old_host"
-  fi
-
-  return $exit_code
-}
-
-# Restore repo from backup ID
-_od_restore_repo_backup() {
-  echo ""
-  echo "╭─ Restore Repo Backup ───────────────────────────────╮"
-  echo "│                                                     │"
-  echo "│ View your backups at:                               │"
-  echo "│   https://internalfb.com/intern/ondemand/backup/    │"
-  echo "│                                                     │"
-  echo "╰─────────────────────────────────────────────────────╯"
-  read "backup_id?Backup ID: "
-
-  if [[ "$backup_id" == "o" || "$backup_id" == "O" ]]; then
-    echo "Opening backups page..."
-    open "https://internalfb.com/intern/ondemand/backups"
-    return 0
-  fi
-
-  if [[ -z "$backup_id" ]]; then
-    echo "No backup ID provided."
-    return 1
-  fi
-
-  echo ""
-  echo "╭─ Select Instance Type ─────────────────────────────╮"
-  echo "│   1) www           6) configerator                 │"
-  echo "│   2) fbcode        7) gpu                          │"
-  echo "│   3) mobile        8) dataswarm                    │"
-  echo "│   4) instagram     9) shellserver                  │"
-  echo "│   5) unity        10) [custom]                     │"
-  echo "╰────────────────────────────────────────────────────╯"
-  read "type_choice?Type [1-10]: "
-
-  local od_type=""
-  case "$type_choice" in
-    1) od_type="www" ;;
-    2) od_type="fbcode" ;;
-    3) od_type="mobile" ;;
-    4) od_type="instagram" ;;
-    5) od_type="unity" ;;
-    6) od_type="configerator" ;;
-    7) od_type="gpu" ;;
-    8) od_type="dataswarm" ;;
-    9) od_type="shellserver" ;;
-    10)
-      read "od_type?Enter type name: "
-      ;;
-    *)
-      echo "Invalid selection"
-      return 1
-      ;;
-  esac
-
-  echo ""
-  echo "Connection: [e]t (recommended)  [m]osh  [s]sh"
-  read "conn?> "
-
-  local conn_flag="--et"
-  case "$conn" in
-    m|M) conn_flag="--mosh" ;;
-    s|S) conn_flag="--ssh" ;;
-  esac
-
-  echo ""
-  echo "Restoring backup $backup_id to new $od_type instance..."
-
-  # Blue-purple tint for OD sessions
-  printf '\033]11;#1e1e28\007'
-
-  dev connect $conn_flag --type "$od_type" --backup "$backup_id"
-  local exit_code=$?
-
-  # Restore black background
-  printf '\033]11;#000000\007'
-  return $exit_code
-}
-
-# ============================================================================
-# OD Manager - Rich TUI for OnDemand
-# ============================================================================
-# Source the OD manager script
-if [[ -f ~/.od-manager.zsh ]]; then
-  source ~/.od-manager.zsh
-fi
-
-# ============================================================================
-# Legacy odssh (simple version - kept for compatibility)
-# ============================================================================
-odssh() {
-  local servers=($(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | sort -u))
-
-  if [[ ${#servers[@]} -eq 0 ]]; then
-    echo "No .od servers found, running dev connect..."
-    dev connect
-    return
-  fi
-
-  echo "Select a server:"
-  local i=1
-  for s in "${servers[@]}"; do
-    echo "  $i) $s"
-    ((i++))
-  done
-
-  read "choice?> "
-  if [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-    local selected="${servers[$choice]}"
-    local server_fqdn="${selected}.fbinfra.net"
-
-    echo "Connecting to ${server_fqdn}..."
-
-    # Subtle blue-purple tint for OD sessions
-    printf '\033]11;#1e1e28\007'
-
-    # Connect with ET
-    x2ssh -et "${server_fqdn}"
-    local exit_code=$?
-
-    # Restore black background
-    printf '\033]11;#000000\007'
-    return $exit_code
-  else
-    echo "Invalid selection"
-    return 1
-  fi
-}
-
-# odssh with 3x3 tmux grid (9 panes)
-odssh9() {
-  local servers=($(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | sort -u))
-
-  if [[ ${#servers[@]} -eq 0 ]]; then
-    echo "No .od servers found, running dev connect..."
-    dev connect
-    return
-  fi
-
-  echo "Select a server:"
-  local i=1
-  for s in "${servers[@]}"; do
-    echo "  $i) $s"
-    ((i++))
-  done
-
-  read "choice?> "
-  if [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-    local selected="${servers[$choice]}"
-    local server_fqdn="${selected}.fbinfra.net"
-
-    echo "Connecting to ${server_fqdn} with 3x3 tmux grid..."
-
-    printf '\033]11;#1e1e28\007'
-
-    x2ssh -et "${server_fqdn}" -c 'tmux new-session -d -s grid9 && tmux split-window -v -t grid9 && tmux split-window -v -t grid9 && tmux select-pane -t grid9:0.0 && tmux split-window -h -t grid9 && tmux split-window -h -t grid9 && tmux select-pane -t grid9:0.3 && tmux split-window -h -t grid9 && tmux split-window -h -t grid9 && tmux select-pane -t grid9:0.6 && tmux split-window -h -t grid9 && tmux split-window -h -t grid9 && tmux select-layout -t grid9 tiled && tmux select-pane -t grid9:0.0 && tmux attach -t grid9 || tmux attach -t grid9'
-    local exit_code=$?
-
-    printf '\033]11;#000000\007'
-    return $exit_code
-  else
-    echo "Invalid selection"
-    return 1
-  fi
-}
-
-# ============================================================================
-# OD File Transfer (SCP)
-# ============================================================================
-odscp() {
-  local servers=($(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | sort -u))
-
-  if [[ ${#servers[@]} -eq 0 ]]; then
-    echo "No .od servers found. Run 'dev connect' first."
-    return 1
-  fi
-
-  local selected
-  if [[ ${#servers[@]} -eq 1 ]]; then
-    selected="${servers[1]}"
-    echo "Using server: $selected"
-  else
-    echo "Select a server:"
-    local i=1
-    for s in "${servers[@]}"; do
-      echo "  $i) $s"
-      ((i++))
-    done
-    read "choice?> "
-    if [[ "$choice" -ge 1 && "$choice" -le ${#servers[@]} ]] 2>/dev/null; then
-      selected="${servers[$choice]}"
-    else
-      echo "Invalid selection"
-      return 1
-    fi
-  fi
-
-  local server_host="${selected}.fbinfra.net"
-
-  local args=()
-  for arg in "$@"; do
-    if [[ "$arg" == ~* ]]; then
-      args+=("${server_host}:${arg}")
-    elif [[ "$arg" == :* ]]; then
-      args+=("${server_host}${arg}")
-    else
-      args+=("$arg")
-    fi
-  done
-
-  echo "Running: scp ${args[*]}"
-  scp "${args[@]}"
-}
-
-# ============================================================================
-# Claude Config Sync (to/from OD)
-# ============================================================================
-odsync-claude() {
-  local server=$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)
-
-  if [[ -z "$server" ]]; then
-    echo "No On Demand servers found. Run 'dev connect' first."
-    return 1
-  fi
-
-  echo "Syncing Claude config to ${server}.fbinfra.net..."
-
-  # Build exclude patterns from template manifest
-  local exclude_args=""
-  if [ -f ~/.claude/.claude-templates-manifest.json ]; then
-    exclude_args=$(cat ~/.claude/.claude-templates-manifest.json | \
-      python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for category, items in data.get('components', {}).items():
-    for item in items:
-        print(f'--exclude={category}/{item}')
-" 2>/dev/null)
-  fi
-
-  rsync -avhP \
-    --exclude='.claude-templates-manifest.json' \
-    $exclude_args \
-    --include='agents/***' \
-    --include='commands/***' \
-    --include='plugins/***' \
-    --include='skills/***' \
-    --exclude='*' \
-    ~/.claude/ "${server}.fbinfra.net":~/.claude/
-
-  echo "✓ Claude config synced!"
-}
-
-odsync-claude-pull() {
-  local server=$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)
-
-  if [[ -z "$server" ]]; then
-    echo "No On Demand servers found."
-    return 1
-  fi
-
-  echo "Pulling Claude config from ${server}.fbinfra.net..."
-
-  local exclude_args=""
-  if [ -f ~/.claude/.claude-templates-manifest.json ]; then
-    exclude_args=$(cat ~/.claude/.claude-templates-manifest.json | \
-      python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for category, items in data.get('components', {}).items():
-    for item in items:
-        print(f'--exclude={category}/{item}')
-" 2>/dev/null)
-  fi
-
-  rsync -avhP \
-    --exclude='.claude-templates-manifest.json' \
-    $exclude_args \
-    --include='agents/***' \
-    --include='commands/***' \
-    --include='plugins/***' \
-    --include='skills/***' \
-    --exclude='*' \
-    "${server}.fbinfra.net":~/.claude/ ~/.claude/
-
-  echo "✓ Config pulled from OD server!"
-}
-
-odssh-sync() {
-  local server=$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)
-
-  if [[ -z "$server" ]]; then
-    echo "No On Demand servers found."
-    return 1
-  fi
-
-  local server_fqdn="calenwalshe@${server}.fbinfra.net"
-
-  echo "Syncing configs to ${server}..."
-  odsync-claude
-
-  if [ -f ~/.terminal-status.zsh ]; then
-    echo "  → Syncing terminal status..."
-    scp -q ~/.terminal-status.zsh "${server_fqdn}:~/"
-    ssh "${server_fqdn}" "grep -q '.terminal-status.zsh' ~/.zshrc 2>/dev/null || echo '
-# Terminal Activity Status Indicator
-if [ -f ~/.terminal-status.zsh ]; then
-  source ~/.terminal-status.zsh
-fi' >> ~/.zshrc" 2>/dev/null
-  fi
-
-  echo "✓ Sync complete!"
-  odssh
-}
-
-# ============================================================================
-# Terminal Status Indicator
-# ============================================================================
-if [ -f ~/.terminal-status.zsh ]; then
-  source ~/.terminal-status.zsh
-fi
-
-# ============================================================================
-# SSH wrapper with terminal status sync and color
-# ============================================================================
-ssh() {
-  local destination=""
-  local args=("$@")
-
-  for arg in "${args[@]}"; do
-    if [[ ! "$arg" =~ ^- ]] && [[ -n "$arg" ]]; then
-      destination="$arg"
-      break
-    fi
-  done
-
-  if [[ -n "$destination" ]] && [[ -f ~/.terminal-status.zsh ]]; then
-    scp -q ~/.terminal-status.zsh "${destination}:~/" 2>/dev/null
-    command ssh "${destination}" "grep -q '.terminal-status.zsh' ~/.zshrc 2>/dev/null || echo '
-# Terminal Activity Status Indicator
-if [ -f ~/.terminal-status.zsh ]; then
-  source ~/.terminal-status.zsh
-fi' >> ~/.zshrc" 2>/dev/null
-  fi
-
-  printf '\033]11;#1a1a2e\007'
-  command ssh "$@"
-  local exit_code=$?
-  printf '\033]11;#000000\007'
-  return $exit_code
-}
-
-# ============================================================================
 # Local tmux Grid Layouts
 # ============================================================================
 tmux3() {
@@ -874,36 +159,26 @@ tmux9() {
 # Tmux Config Sync
 # ============================================================================
 tmux-push() {
-  local server="${1:-$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)}"
-
+  local server="$1"
   if [[ -z "$server" ]]; then
-    echo "Usage: tmux-push [host]"
-    echo "No OD found. Specify a host like: tmux-push myserver.sb.facebook.com"
+    echo "Usage: tmux-push <host>"
     return 1
   fi
-
-  [[ "$server" =~ ^[0-9]+\.od$ ]] && server="${server}.fbinfra.net"
-
   if [[ ! -f ~/.tmux.conf ]]; then
     echo "❌ No ~/.tmux.conf found"
     return 1
   fi
-
   echo "📤 Pushing .tmux.conf to $server..."
   scp ~/.tmux.conf "${server}:~/.tmux.conf" && \
   ssh "$server" "tmux source-file ~/.tmux.conf 2>/dev/null || true; echo '✅ Tmux config synced and reloaded'"
 }
 
 tmux-pull() {
-  local server="${1:-$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)}"
-
+  local server="$1"
   if [[ -z "$server" ]]; then
-    echo "Usage: tmux-pull [host]"
+    echo "Usage: tmux-pull <host>"
     return 1
   fi
-
-  [[ "$server" =~ ^[0-9]+\.od$ ]] && server="${server}.fbinfra.net"
-
   echo "📥 Pulling .tmux.conf from $server..."
   scp "${server}:~/.tmux.conf" ~/.tmux.conf && \
   tmux source-file ~/.tmux.conf 2>/dev/null || true
@@ -914,59 +189,39 @@ alias tpush='tmux-push'
 alias tpull='tmux-pull'
 
 # ============================================================================
-# Dotfiles Sync for Claude Merging
+# Dotfiles Sync
 # ============================================================================
-# Pulls dotfiles from OD to staging directory for Claude to merge
-# Location: /tmp/dotfiles-od/
-
-DOTFILES_STAGE="/tmp/dotfiles-od"
+DOTFILES_STAGE="/tmp/dotfiles-remote"
 DOTFILES_LIST=(.tmux.conf .zshrc .vimrc .gitconfig)
 
 dotpull() {
-  local server="${1:-$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)}"
-
+  local server="$1"
   if [[ -z "$server" ]]; then
-    echo "❌ No OD server found. Usage: dotpull [host]"
+    echo "❌ Usage: dotpull <host>"
     return 1
   fi
-
-  [[ "$server" =~ ^[0-9]+\.od$ ]] && server="${server}.fbinfra.net"
-
-  # Create staging directory
   mkdir -p "$DOTFILES_STAGE"
-
   echo "📥 Pulling dotfiles from $server to $DOTFILES_STAGE/"
   echo "─────────────────────────────────────────────────"
-
   for dotfile in "${DOTFILES_LIST[@]}"; do
-    if scp -q "${server}:~/${dotfile}" "${DOTFILES_STAGE}/${dotfile}.od" 2>/dev/null; then
-      echo "  ✅ ${dotfile} → ${DOTFILES_STAGE}/${dotfile}.od"
+    if scp -q "${server}:~/${dotfile}" "${DOTFILES_STAGE}/${dotfile}.remote" 2>/dev/null; then
+      echo "  ✅ ${dotfile} → ${DOTFILES_STAGE}/${dotfile}.remote"
     else
-      echo "  ⏭️  ${dotfile} (not found on OD)"
+      echo "  ⏭️  ${dotfile} (not found on remote)"
     fi
   done
-
   echo "─────────────────────────────────────────────────"
-  echo ""
-  echo "📁 Staged OD dotfiles: $DOTFILES_STAGE/"
   ls -la "$DOTFILES_STAGE/"
-  echo ""
-  echo "💡 Tell Claude: 'merge dotfiles from $DOTFILES_STAGE with my local configs'"
 }
 
 dotpush() {
-  local server="${1:-$(dev list 2>/dev/null | grep -oE '[0-9]+\.od' | head -1)}"
-
+  local server="$1"
   if [[ -z "$server" ]]; then
-    echo "❌ No OD server found. Usage: dotpush [host]"
+    echo "❌ Usage: dotpush <host>"
     return 1
   fi
-
-  [[ "$server" =~ ^[0-9]+\.od$ ]] && server="${server}.fbinfra.net"
-
   echo "📤 Pushing dotfiles to $server"
   echo "─────────────────────────────────────────────────"
-
   for dotfile in "${DOTFILES_LIST[@]}"; do
     if [[ -f ~/"$dotfile" ]]; then
       if scp -q ~/"$dotfile" "${server}:~/${dotfile}" 2>/dev/null; then
@@ -976,7 +231,6 @@ dotpush() {
       fi
     fi
   done
-
   echo "─────────────────────────────────────────────────"
   echo "✅ Done"
 }
