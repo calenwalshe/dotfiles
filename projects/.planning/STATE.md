@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: experiment-control-plane
 status: in_progress
-stopped_at: "01-01 complete"
-last_updated: "2026-04-21T04:00:11Z"
-last_activity: 2026-04-21 — Completed 01-01-PLAN.md (Phoenix + otel-cli deployed)
+stopped_at: "02-01 complete"
+last_updated: "2026-04-21T04:17:00Z"
+last_activity: 2026-04-21 — Completed 02-01-PLAN.md (otel hooks + traceloop-sdk)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
-  percent: 25
+  total_plans: 2
+  completed_plans: 2
+  percent: 50
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-21)
 
 ## Current Position
 
-Phase: 1 — VPS Infrastructure
-Plan: 01-01 complete (1 of N in phase)
+Phase: 2 — Hook Instrumentation
+Plan: 02-01 complete (1 of N in phase)
 Status: In progress
-Last activity: 2026-04-21 — Completed 01-01 (Phoenix container + otel-cli deployed)
+Last activity: 2026-04-21 — Completed 02-01 (otel hooks + traceloop-sdk installed)
 
-Progress: [█░░░░░░░░░░░░░░░░░░░░] 1/1 plans done; 0/4 phases complete
+Progress: [██░░░░░░░░░░░░░░░░░░░] 2/2 plans done; 0/4 phases complete
 
 ## Performance Metrics
 
@@ -64,6 +64,11 @@ Key decisions carried forward:
 - UFW open to 0.0.0.0/0 v1 accepted risk
 - choices={"label": float} dict form mandatory (list form → NaN)
 
+**02-01 decisions:**
+- traceloop-sdk installed into claude-stack-env venv (system python3 IS the venv; .local/lib not on venv sys.path)
+- Hooks registered as async: true to avoid blocking Claude Code execution
+- settings.json hook format: nested {"hooks": [...]} groups (not flat) — matched existing schema
+
 ### Pending Todos
 
 None.
@@ -74,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-21T04:00:11Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-04-21T04:17:00Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
