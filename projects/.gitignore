@@ -1,0 +1,8 @@
+# CI-generated eval artifacts — do not commit
+evals/current.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/

@@ -1,11 +1,20 @@
 {
+  "permissions": {
+    "allow": [
+      "Edit(/home/agent/**)",
+      "Write(/home/agent/**)"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/home/agent/.claude/hooks/gsd-check-update.js\""
+            "command": "/home/agent/.claude/hooks/sessionstart-snapshot.sh",
+            "async": true
           }
         ]
       },
@@ -13,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "# DISABLED \u2014 replaced by reup-session-start.sh: node \"/home/agent/.claude/hooks/session-resume.js\""
+            "command": "/home/agent/.claude/hooks/ctrl-session-start.sh"
           }
         ]
       },
@@ -26,21 +35,11 @@
         ]
       },
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/reup-session-start.sh"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/agent/.claude/hooks/rtk-rewrite.sh"
+            "command": "bash ~/.claude/hooks/sessionstart-memory-nudge.sh"
           }
         ]
       },
@@ -48,37 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/cortex-phase-guard.sh",
-            "timeout": 10
-          }
-        ],
-        "matcher": "Write|Edit"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"/home/agent/.claude/hooks/gsd-context-monitor.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"/home/agent/.claude/hooks/context-checkpoint.js\""
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/agent/.claude/hooks/cortex-sync.sh",
-            "statusMessage": "Syncing Cortex skill to GitHub...",
+            "command": "/home/agent/.claude/hooks/cortex-memory-sessionstart.sh",
             "async": true
           }
         ]
@@ -87,18 +56,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/cortex-validator-trigger.sh",
-            "async": true
+            "command": "/home/agent/.claude/hooks/sessionstart-postclear-recall.sh",
+            "timeout": 30
           }
-        ],
-        "matcher": "Write|Edit"
+        ]
       },
       {
-        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/cortex-distribute.sh",
+            "command": "bash /home/agent/.claude/hooks/otel-session-start.sh",
             "async": true
           }
         ]
@@ -112,19 +79,44 @@
             "command": "/home/agent/.claude/hooks/cortex-precompact.sh"
           }
         ]
-      }
-    ],
-    "PostCompact": [
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/precompact-memory-snapshot.sh"
+          }
+        ]
+      },
       {
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/cortex-postcompact.sh"
+            "command": "/home/agent/.claude/hooks/precompact-session-snapshot.sh"
           }
         ]
       }
     ],
-    "Stop": [
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/sessionend-session-summary.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/sessionend-db-update.sh",
+            "async": true
+          }
+        ]
+      },
       {
         "hooks": [
           {
@@ -138,7 +130,171 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/agent/.claude/hooks/reup-stop.sh",
+            "command": "/home/agent/.claude/hooks/sessionend-turns.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/agent/.claude/hooks/otel-session-end.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-postcompact.js"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PYTHONPATH=~/.claude/context-store python3 ~/.claude/hooks/context-capture.py",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-memory-sessionend.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PYTHONPATH=~/.claude/context-store python3 ~/.claude/hooks/context-capture.py",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-phase-guard.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-critique-guard.sh",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-research-guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/postuse-git-episode.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-validator-trigger.sh",
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/gdrive-html-upload.sh",
+            "timeout": 30,
+            "statusMessage": "Uploading to Google Drive..."
+          },
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/caddy-deploy.sh",
+            "timeout": 60,
+            "statusMessage": "Validating Caddy config..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/postuse-event-logger.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-memory-track-session.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/token-ledger.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/agent/.claude/hooks/cortex-context-capacity.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|Bash|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PYTHONPATH=~/.claude/context-store python3 ~/.claude/hooks/context-capture.py",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/agent/.claude/hooks/otel-post-tool-use.sh",
             "async": true
           }
         ]
@@ -180,19 +336,49 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "node \"/home/agent/.claude/hooks/gsd-statusline.js\""
+    "command": "ccstatusline",
+    "padding": 0,
+    "refreshInterval": 5
   },
   "enabledPlugins": {
-    "cli-anything@cli-anything": true
+    "skill-creator@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "ui-designer@daymade-skills": true,
+    "design-studio@design-studio": true,
+    "token-dashboard@design-studio": true
   },
   "extraKnownMarketplaces": {
-    "cli-anything": {
+    "anthropic-agent-skills": {
       "source": {
         "source": "github",
-        "repo": "HKUDS/CLI-Anything"
+        "repo": "anthropics/skills"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "daymade-skills": {
+      "source": {
+        "source": "github",
+        "repo": "daymade/claude-code-skills"
+      }
+    },
+    "design-studio": {
+      "source": {
+        "source": "directory",
+        "path": "/home/agent/projects/design-studio-marketplace"
       }
     }
   },
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "skipDangerousModePermissionPrompt": true,
-  "model": "sonnet"
+  "voiceEnabled": true,
+  "alwaysThinkingEnabled": false
 }

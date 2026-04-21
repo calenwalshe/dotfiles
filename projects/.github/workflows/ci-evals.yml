@@ -1,0 +1,36 @@
+name: CI Evals
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install eval dependencies
+        run: pip install "arize-phoenix-evals>=2" pandas pytest
+
+      - name: Run eval suite
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PHOENIX_URL: ${{ vars.PHOENIX_URL }}
+        run: pytest tests/evals/test_ci_gate.py -v
+
+      - name: Check eval gate
+        run: python scripts/eval-gate.py
+
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: evals/current.json
+          if-no-files-found: ignore

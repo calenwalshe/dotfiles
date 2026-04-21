@@ -1,18 +1,17 @@
 {
-  "slug": "whole-house-audio-llm-control",
+  "slug": "experiment-control-plane",
   "mode": "execute",
   "approval_status": "approved",
-  "active_contract": "docs/cortex/contracts/whole-house-audio-llm-control/contract-001.md",
+  "active_contract": "docs/cortex/contracts/experiment-control-plane/contract-001.md",
   "artifacts": [
-    "docs/cortex/clarify/ai-music-control-google-home/20260407T012600Z-clarify-brief.md",
-    "docs/cortex/research/ai-music-control-google-home/concept-20260407T013200Z.md",
-    "docs/cortex/clarify/whole-house-audio-llm-control/20260407T014000Z-clarify-brief.md",
-    "docs/cortex/research/whole-house-audio-llm-control/concept-20260407T014500Z.md",
-    "docs/cortex/research/whole-house-audio-llm-control/hardware-budget-20260407T015500Z.md",
-    "docs/cortex/specs/whole-house-audio-llm-control/spec.md",
-    "docs/cortex/specs/whole-house-audio-llm-control/gsd-handoff.md",
-    "docs/cortex/contracts/whole-house-audio-llm-control/contract-001.md",
-    "docs/cortex/research/whole-house-audio-llm-control/validation-20260407T020500Z.md"
+    "docs/cortex/clarify/experiment-control-plane/20260420T120000Z-clarify-brief.md",
+    "docs/cortex/research/experiment-control-plane/current-understanding.md",
+    "docs/cortex/research/experiment-control-plane/concept-20260421T025259Z.md",
+    "docs/cortex/clarify/experiment-control-plane/20260421T030203Z-clarify-brief.md",
+    "docs/cortex/research/experiment-control-plane/implementation-20260421T031706Z.md",
+    "docs/cortex/specs/experiment-control-plane/spec.md",
+    "docs/cortex/specs/experiment-control-plane/gsd-handoff.md",
+    "docs/cortex/contracts/experiment-control-plane/contract-001.md"
   ],
   "gates": {
     "clarify_complete": true,
@@ -25,6 +24,65 @@
     "pr_number": null,
     "pr_url": null,
     "issue_number": null,
-    "branch": null
-  }
+    "branch": "cortex/experiment-control-plane"
+  },
+  "critique_receipts": [
+    {
+      "gate": "clarify",
+      "slug": "experiment-control-plane",
+      "timestamp": "2026-04-20T12:00:00Z",
+      "severity": "STOP",
+      "finding_count": 5,
+      "stop_count": 2,
+      "caution_count": 3,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/experiment-control-plane/critique-clarify.md"
+    },
+    {
+      "gate": "dossier",
+      "slug": "experiment-control-plane",
+      "timestamp": "2026-04-21T02:52:59Z",
+      "severity": "STOP",
+      "finding_count": 4,
+      "stop_count": 2,
+      "caution_count": 2,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/experiment-control-plane/critique-dossier-20260421T025259Z.md"
+    },
+    {
+      "gate": "clarify",
+      "slug": "experiment-control-plane",
+      "timestamp": "2026-04-21T03:02:03Z",
+      "severity": "STOP",
+      "finding_count": 4,
+      "stop_count": 3,
+      "caution_count": 1,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/experiment-control-plane/critique-clarify.md",
+      "iteration": 2
+    },
+    {
+      "gate": "dossier",
+      "slug": "experiment-control-plane",
+      "timestamp": "2026-04-21T03:21:03Z",
+      "severity": "STOP",
+      "finding_count": 4,
+      "stop_count": 2,
+      "caution_count": 2,
+      "engine": "codex",
+      "artifact": "docs/cortex/reviews/experiment-control-plane/critique-dossier-20260421T031706Z.md"
+    },
+    {
+      "gate": "spec",
+      "slug": "experiment-control-plane",
+      "timestamp": "2026-04-21T03:35:00Z",
+      "severity": "STOP",
+      "finding_count": 4,
+      "stop_count": 2,
+      "caution_count": 2,
+      "engine": "claude-p-fallback",
+      "artifact": "docs/cortex/reviews/experiment-control-plane/critique-spec.md"
+    }
+  ],
+  "reclarify_required": false
 }
