@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: experiment-control-plane
 status: in_progress
-stopped_at: "03-01 complete"
-last_updated: "2026-04-21T04:35:00Z"
-last_activity: 2026-04-21 — Completed 03-01-PLAN.md (eval runner, gate script, baseline.json)
+stopped_at: "04-01 complete"
+last_updated: "2026-04-20T00:08:00Z"
+last_activity: 2026-04-20 — Completed 04-01-PLAN.md (ci-evals workflow, .gitignore; manual steps for secrets/branch protection)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 3
-  completed_plans: 3
-  percent: 75
+  total_plans: 4
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-21)
 
 ## Current Position
 
-Phase: 3 — Eval Runner and Gate
-Plan: 03-01 complete (1 of 1 in phase)
-Status: In progress
-Last activity: 2026-04-21 — Completed 03-01 (eval runner, gate script, baseline.json)
+Phase: 4 — CI Wiring and Branch Protection
+Plan: 04-01 complete (1 of 1 in phase)
+Status: In progress — manual steps required for GitHub secrets and branch protection
+Last activity: 2026-04-20 — Completed 04-01 (ci-evals workflow, .gitignore; secrets/branch protection need manual setup)
 
-Progress: [███░░░░░░░░░░░░░░░░░░] 3/3 plans done; 0/4 phases complete
+Progress: [████████████████████░] 4/4 plans done; 0/4 phases complete (manual steps pending)
 
 ## Performance Metrics
 
@@ -75,9 +75,16 @@ Key decisions carried forward:
 - NaN guard assertion (scores.count() == len(df)) added before mean check — catches silent regression if choices format changes to list
 - evals/current.json is CI-generated artifact (not committed); baseline.json is committed and changes via PR
 
+**04-01 decisions:**
+- Remote repo calenwalshe/dotfiles does not exist on GitHub; secrets/variables/branch protection require manual setup after repo creation
+- PHOENIX_URL uses public VPS IP http://144.202.81.218:6006 (not localhost) — GitHub Actions runners can't reach localhost
+- evals/current.json gitignored (resolved pending todo from 03-01)
+
 ### Pending Todos
 
-- Add evals/current.json to .gitignore (CI-generated, should not be committed)
+- Push repo to GitHub (remote calenwalshe/dotfiles does not exist yet)
+- After push: set OPENAI_API_KEY secret, PHOENIX_URL variable, configure branch protection requiring ci-evals
+- See 04-01-SUMMARY.md for exact commands
 
 ### Blockers/Concerns
 
@@ -85,6 +92,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-21T04:35:00Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-04-20T00:08:00Z
+Stopped at: Completed 04-01-PLAN.md — manual GitHub steps pending (see Pending Todos)
 Resume file: None
