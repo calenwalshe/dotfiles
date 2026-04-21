@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: experiment-control-plane
 status: in_progress
-stopped_at: "02-01 complete"
-last_updated: "2026-04-21T04:17:00Z"
-last_activity: 2026-04-21 — Completed 02-01-PLAN.md (otel hooks + traceloop-sdk)
+stopped_at: "03-01 complete"
+last_updated: "2026-04-21T04:35:00Z"
+last_activity: 2026-04-21 — Completed 03-01-PLAN.md (eval runner, gate script, baseline.json)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 2
-  completed_plans: 2
-  percent: 50
+  total_plans: 3
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** PRs that degrade LLM eval scores are blocked from merging; every Claude Code session produces correlated OTLP spans visible in Phoenix; no prompt/response content leaves the VPS by default.
-**Current focus:** Phase 1 — VPS Infrastructure
+**Current focus:** Phase 3 — Eval Runner and Gate
 
 ## Current Position
 
-Phase: 2 — Hook Instrumentation
-Plan: 02-01 complete (1 of N in phase)
+Phase: 3 — Eval Runner and Gate
+Plan: 03-01 complete (1 of 1 in phase)
 Status: In progress
-Last activity: 2026-04-21 — Completed 02-01 (otel hooks + traceloop-sdk installed)
+Last activity: 2026-04-21 — Completed 03-01 (eval runner, gate script, baseline.json)
 
-Progress: [██░░░░░░░░░░░░░░░░░░░] 2/2 plans done; 0/4 phases complete
+Progress: [███░░░░░░░░░░░░░░░░░░] 3/3 plans done; 0/4 phases complete
 
 ## Performance Metrics
 
@@ -69,9 +69,15 @@ Key decisions carried forward:
 - Hooks registered as async: true to avoid blocking Claude Code execution
 - settings.json hook format: nested {"hooks": [...]} groups (not flat) — matched existing schema
 
+**03-01 decisions:**
+- arize-phoenix-evals installed into claude-stack-env venv via pip3 (same pattern as 02-01; .local/lib not on venv sys.path)
+- asyncio.run() over pytest-asyncio for async eval runner (simpler, no extra dependency)
+- NaN guard assertion (scores.count() == len(df)) added before mean check — catches silent regression if choices format changes to list
+- evals/current.json is CI-generated artifact (not committed); baseline.json is committed and changes via PR
+
 ### Pending Todos
 
-None.
+- Add evals/current.json to .gitignore (CI-generated, should not be committed)
 
 ### Blockers/Concerns
 
@@ -79,6 +85,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-21T04:17:00Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-04-21T04:35:00Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
