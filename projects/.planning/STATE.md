@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: experiment-control-plane
-status: planning
-stopped_at: Bridge import complete
-last_updated: "2026-04-21T03:45:00Z"
-last_activity: 2026-04-21 — Bridge import from Cortex artifacts
+status: in_progress
+stopped_at: "01-01 complete"
+last_updated: "2026-04-21T04:00:11Z"
+last_activity: 2026-04-21 — Completed 01-01-PLAN.md (Phoenix + otel-cli deployed)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 1
+  completed_plans: 1
+  percent: 25
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-21)
 ## Current Position
 
 Phase: 1 — VPS Infrastructure
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-04-21 — Bridge import complete
+Plan: 01-01 complete (1 of N in phase)
+Status: In progress
+Last activity: 2026-04-21 — Completed 01-01 (Phoenix container + otel-cli deployed)
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░] 0/0 plans; 0/4 phases complete
+Progress: [█░░░░░░░░░░░░░░░░░░░░] 1/1 plans done; 0/4 phases complete
 
 ## Performance Metrics
 
@@ -51,6 +51,11 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░] 0/0 
 
 Bridge import from Cortex contract: docs/cortex/contracts/experiment-control-plane/contract-001.md
 
+**01-01 decisions:**
+- Phoenix storage: Default sqlite at /root/.phoenix/phoenix.db (not /phoenix-storage mount); named volume provides persistence; acceptable for v1
+- otel-cli v0.4.5 `version` subcommand removed; verify with `help` + live span instead
+- UFW 6006 open to 0.0.0.0/0 (accepted v1 risk — GitHub Actions IP ranges rotate)
+
 Key decisions carried forward:
 - Phoenix over Langfuse (RAM constraint)
 - traceparent via /tmp file (subprocess isolation)
@@ -69,6 +74,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-21T03:45:00Z
-Stopped at: Bridge import complete
+Last session: 2026-04-21T04:00:11Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
