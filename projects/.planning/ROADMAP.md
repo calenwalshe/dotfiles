@@ -14,7 +14,7 @@ Deploy Phoenix tracing + CI eval gate on the agent VPS (144.202.81.218) so that 
 **Success Criteria** (what must be TRUE):
 1. `docker ps` on 144.202.81.218 shows a running `phoenix` container; `curl http://localhost:6006/health` returns HTTP 200
 **Research**: Unlikely
-**Plans**: 0 plans
+**Plans**: 1 plan
 
 ---
 
@@ -29,7 +29,7 @@ Deploy Phoenix tracing + CI eval gate on the agent VPS (144.202.81.218) so that 
 3. A tool call made immediately after `/clear` still produces a span in Phoenix (lazy-init guard fires)
 4. A Python script that imports `anthropic` and runs inside a skill with `TRACELOOP_TRACE_CONTENT=true` (opt-in) emits LLM spans with prompt/response content to Phoenix; the same script with `TRACELOOP_TRACE_CONTENT=false` (global default) emits spans without content
 **Research**: Unlikely
-**Plans**: 0 plans
+**Plans**: 1 plan
 
 ---
 
@@ -43,7 +43,7 @@ Deploy Phoenix tracing + CI eval gate on the agent VPS (144.202.81.218) so that 
 2. The eval gate script (`scripts/eval-gate.py`) reads `evals/baseline.json` and `evals/current.json`, fails with exit code 1 when a score drops more than `max_delta` below baseline or below `min_absolute`, and exits 0 when all metrics pass
 3. `evals/baseline.json` is committed to the repo with the schema from the implementation dossier (metadata + scores + thresholds); thresholds initialized to `min_absolute: 0.75, max_delta: 0.05` for the first eval suite
 **Research**: Unlikely
-**Plans**: 0 plans
+**Plans**: 1 plan
 
 ---
 
@@ -56,7 +56,7 @@ Deploy Phoenix tracing + CI eval gate on the agent VPS (144.202.81.218) so that 
 1. A GitHub Actions workflow (`ci-evals.yml`) runs on PR; the job fails (blocking merge) when `eval-gate.py` exits 1; the job passes when all metrics clear thresholds
 2. GitHub repository branch protection is configured with `ci-evals` as a required status check on the default branch
 **Research**: Unlikely
-**Plans**: 0 plans
+**Plans**: 1 plan
 
 ---
 
@@ -64,7 +64,7 @@ Deploy Phoenix tracing + CI eval gate on the agent VPS (144.202.81.218) so that 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| Phase 1: VPS Infrastructure | 0/0 | Not started | - |
-| Phase 2: Hook Instrumentation | 0/0 | Not started | - |
-| Phase 3: Eval Runner and Gate | 0/0 | Not started | - |
-| Phase 4: CI Wiring and Branch Protection | 0/0 | Not started | - |
+| Phase 1: VPS Infrastructure | 1/1 | Complete | 2026-04-21 |
+| Phase 2: Hook Instrumentation | 1/1 | Complete | 2026-04-21 |
+| Phase 3: Eval Runner and Gate | 1/1 | Complete | 2026-04-21 |
+| Phase 4: CI Wiring and Branch Protection | 1/1 | Complete | 2026-04-21 |

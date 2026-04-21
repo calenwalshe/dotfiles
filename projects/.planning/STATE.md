@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: experiment-control-plane
-status: in_progress
-stopped_at: "04-01 complete"
-last_updated: "2026-04-20T00:08:00Z"
-last_activity: 2026-04-20 — Completed 04-01-PLAN.md (ci-evals workflow, .gitignore; manual steps for secrets/branch protection)
+status: complete
+stopped_at: "All 4 phases verified 19/19 must-haves"
+last_updated: "2026-04-21T05:00:00Z"
+last_activity: 2026-04-21 — All phases complete; 19/19 must-haves verified; manual GitHub steps pending
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 4
   total_plans: 4
   completed_plans: 4
   percent: 100
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** PRs that degrade LLM eval scores are blocked from merging; every Claude Code session produces correlated OTLP spans visible in Phoenix; no prompt/response content leaves the VPS by default.
-**Current focus:** Phase 3 — Eval Runner and Gate
+**Current focus:** Milestone complete — push to GitHub and configure secrets/branch protection
 
 ## Current Position
 
-Phase: 4 — CI Wiring and Branch Protection
+Phase: 4 — CI Wiring and Branch Protection (COMPLETE)
 Plan: 04-01 complete (1 of 1 in phase)
-Status: In progress — manual steps required for GitHub secrets and branch protection
-Last activity: 2026-04-20 — Completed 04-01 (ci-evals workflow, .gitignore; secrets/branch protection need manual setup)
+Status: All 4 phases verified 19/19 must-haves — manual GitHub steps pending (see Pending Todos)
+Last activity: 2026-04-21 — Milestone verified complete
 
-Progress: [████████████████████░] 4/4 plans done; 0/4 phases complete (manual steps pending)
+Progress: [█████████████████████] 4/4 plans done; 4/4 phases complete
 
 ## Performance Metrics
 
